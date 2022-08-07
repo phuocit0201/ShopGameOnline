@@ -4,18 +4,15 @@ use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
-use App\Http\Helpers\Mess;
 use Exception;
-use App\Http\Helpers\FunResource;
-use Illuminate\Support\Facades\Auth;
 
 class UserService{
 
     //tạo mới người dùng
-    public static function createUser($data)
+    public static function createUser($user)
     {
         try{
-            return User::create($data);
+            return User::create($user);
         }catch(Exception $e){
             return;
         }
@@ -24,7 +21,11 @@ class UserService{
     //get all user
     public static function getAllUser($perPage)
     {
-        return new UserCollection(User::paginate($perPage));
+        try{
+            return new UserCollection(User::paginate($perPage));
+        }catch(Exception $e){
+            return null;
+        }
     }
 
     //get user by id
@@ -39,10 +40,14 @@ class UserService{
     //xóa 1 tài khoản người dùng
 
     public static function deleteUser($id){
-        $user = UserService::getUserById($id);
-        if($user){
-            $user->delete();
-            return true;
+        try{
+            $user = UserService::getUserById($id);
+            if($user){
+                $user->delete();
+                return true;
+            }
+        }catch(Exception $e){
+            return false;
         }
         return false;
     }
@@ -52,10 +57,10 @@ class UserService{
     {
         try{
             $checkBanned = DB::table("users")->where('username',$username)->first();
-                return $checkBanned;
+            return $checkBanned;
         }catch(Exception $e){
+            return null;
         }   
-        return null;
     }
 }
 ?>

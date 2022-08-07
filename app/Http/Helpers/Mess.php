@@ -16,6 +16,7 @@ class Mess{
     public static $PASSWORD_OLD_INCORRECT = "Old password is incorrect";
     public static $INVALID_INFO = "Invalid information";
     public static $CONFIRM_PASSWORD_INCORRECT = "Confirm password is incorrect";
+    public static $CATEGORY_NOT_EXIST = "This category not exist";
 }
 
 ?>

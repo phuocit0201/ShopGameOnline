@@ -46,7 +46,7 @@ class UserController extends Controller
         //kiểm tra có lỗi ở những trường hợp trên hay không
         if ($validator->fails()){
             return response()->json([
-                'success' => false,
+                'status' => false,
                 'errors' => $validator->errors()->toArray()
             ]);
         }
@@ -128,15 +128,6 @@ class UserController extends Controller
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,UserService::getUserById($id),200);
     }
 
-    public function destroy($id)
-    {
-        if(UserService::deleteUser($id))
-        {
-            FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
-        }
-        return FunResource::responseNoData(false,Mess::$USER_NOT_EXIST,401);
-    }
-
     public function login(Request $request)
     {
         //lấy ra thông tin user trong database với username mà người dùng gởi request
@@ -168,4 +159,14 @@ class UserController extends Controller
         Auth::logout();
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
+
+    
+    // public function destroy($id)
+    // {
+    //     if(UserService::deleteUser($id))
+    //     {
+    //         FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
+    //     }
+    //     return FunResource::responseNoData(false,Mess::$USER_NOT_EXIST,401);
+    // }
 }

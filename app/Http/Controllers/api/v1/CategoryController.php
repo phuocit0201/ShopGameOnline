@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\api\v1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\FunResource;
+use App\Http\Helpers\Mess;
 use Illuminate\Http\Request;
-
+use App\Http\Services\CategoryService;
+use Illuminate\Support\Facades\Validator;
 class CategoryController extends Controller
 {
     /**
@@ -12,9 +15,9 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return CategoryService::getAll($request->per_page);
     }
 
     /**
@@ -22,9 +25,22 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'name'=> 'required|max:50|alpha_num',
+        ]);
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+        $category = CategoryService::create($request->all());
+        if($category === false){
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,401);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$category,200);
     }
 
     /**
@@ -35,7 +51,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -46,7 +62,11 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        //
+        $category = CategoryService::find($id);
+        if(!$category){
+            return FunResource::responseNoData(false,Mess::$CATEGORY_NOT_EXIST,404);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$category,200);
     }
 
     /**
@@ -67,9 +87,27 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request,$id)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'name' => 'required|max:50|alpha_num',
+        ]);
+        $category = [
+            'name' => $request->name,
+            'status' => $request->status 
+        ];
+        if($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+
+        $update = CategoryService::update($id,$category);
+        if(!$update){
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,CategoryService::find($id),200);
     }
 
     /**
@@ -80,6 +118,10 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+       $delete = CategoryService::delete($id);
+       if($delete === false){
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,401);
+       }
+       return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 }
