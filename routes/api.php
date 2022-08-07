@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\api\v1\AccountController;
 use App\Http\Controllers\api\v1\CategoryController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
@@ -57,7 +58,7 @@ use Illuminate\Support\Facades\Route;
         });
         //-----------------------------------------END--------------------------------------------------------
 
-        //--------------------------------------CATEGORIES-----------------------------------------------
+        //--------------------------------------CATEGORIES----------------------------------------------------
         Route::group([
             "prefix"=>"categories"
         ],
@@ -67,7 +68,19 @@ use Illuminate\Support\Facades\Route;
             Route::delete('/destroy/{id}',[CategoryController::class,"destroy"])->name("destroyCategory");
             Route::put('/update/{id}',[CategoryController::class,"update"])->name("updateCategory");
         });
-        //------------------------------------------END------------------------------------------------------
+        //----------------------------------------END------------------------------------------------------
+
+        //--------------------------------------ACCOUNT----------------------------------------------------
+        Route::group([
+            "prefix"=>"accounts"
+        ],
+        function(){
+            Route::post('/create',[AccountController::class,"store"])->name("createAccount");
+            // Route::get('/show/{id}',[CategoryController::class,"show"])->name("showCategory");
+            // Route::delete('/destroy/{id}',[CategoryController::class,"destroy"])->name("destroyCategory");
+            // Route::put('/update/{id}',[CategoryController::class,"update"])->name("updateCategory");
+        });
+        //----------------------------------------END------------------------------------------------------
     });
 
     //----------------------------------------ROUTE PUBLIC----------------------------------------------------
@@ -85,12 +98,22 @@ use Illuminate\Support\Facades\Route;
         });
         //------------------------------------------END--------------------------------------------------------
 
-        //---------------------------------------CATEGORIES-----------------------------------------------
+        //---------------------------------------CATEGORIES----------------------------------------------------
         Route::group([
             "prefix"=>"categories"
         ],
         function(){
             Route::get('/index',[CategoryController::class,"index"])->name("indexCategory");
+        });
+        //------------------------------------------END--------------------------------------------------------
+        
+        //---------------------------------------ACCOUNTS----------------------------------------------------
+        Route::group([
+            "prefix"=>"accounts"
+        ],
+        function(){
+            Route::get('/index',[AccountController::class,"index"])->name("indexAcounts");
+            Route::get('/account-by-category/{id}',[AccountController::class,"showByCategory"])->name("showByCategory");
         });
         //------------------------------------------END--------------------------------------------------------
     });

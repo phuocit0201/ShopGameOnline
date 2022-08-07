@@ -37,7 +37,7 @@ class CategoryController extends Controller
             ]);
         }
         $category = CategoryService::create($request->all());
-        if($category === false){
+        if($category === null){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,401);
         }
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$category,200);
