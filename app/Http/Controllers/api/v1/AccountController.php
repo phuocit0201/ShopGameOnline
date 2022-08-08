@@ -10,6 +10,8 @@ use App\Http\Services\CategoryService;
 use App\Models\Account;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Symfony\Component\CssSelector\XPath\Extension\FunctionExtension;
+
 class AccountController extends Controller
 {
     /**
@@ -82,7 +84,21 @@ class AccountController extends Controller
      */
     public function show($id)
     {
-        
+        //nếu là admin thì show những account có trạng thái đã bán và bị ẩn
+        if(FunResource::checkIsAdmin()){
+            $account = AccountService::getAccountByIdAdmin($id);
+            if(!$account){
+                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+            }
+        }
+        //nếu không phải thì chỉ show những account có trạng thái hiển thị
+        else{
+            $account = AccountService::getAccountByIdClient($id);
+            if(!$account){
+                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+            }
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
     }
 
     /**
@@ -105,7 +121,28 @@ class AccountController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validator = Validator::make($request->all(),[
+            'info1' => 'required|max:50',
+            'info2' => 'required|max:50',
+            'info3' => 'required|max:50',
+            'import_price' => 'required|numeric',
+            'sale_price' => 'required|numeric',
+            'category_id' => 'required|numeric',
+            'description' => 'required',
+            'status' => 'required|numeric|min:0|max:1|'
+        ]);
+        
+        //kiểm tra nếu lỗi thì trả về những lỗi đó
+        if($validator->fails()){
+            return FunResource::responseData(false,Mess::$INVALID_INFO,$validator->errors()->toArray(),404);
+        }
+        $account = $request->all();
+        unset($account["token"]);
+        $update = AccountService::update($id,$account);
+        if(!$update){
+            return FunResource::responseNoData(false,Mess::$ACCOUNT_NOT_EXIST,404);
+        }
+        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 
     /**
@@ -116,11 +153,31 @@ class AccountController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $delete = AccountService::update($id,["status"=>2]);
+        if(!$delete){
+            return FunResource::responseNoData(false,Mess::$ACCOUNT_NOT_EXIST,404);
+        }
+        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 
-    public function showByCategory(Request $request,$id)
+    //get danh sách tài khoản game này giành cho client vì chi lấy những tài khoản có trạng thái hiện
+    public function showAccountByCategory(Request $request,$id)
     {
-        return AccountService::getByCategory($id,$request->per_page);
+        //nếu là admin thì show những account có trạng thái đã bán và bị ẩn
+        if(FunResource::checkIsAdmin()){
+            $account = AccountService::getAccountByCategoryAdmin($id,$request->per_page);
+            if(!$account){
+                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+            }
+        }
+        //nếu không phải thì chỉ show những account có trạng thái hiển thị
+        else{
+            $account = AccountService::getAccountByCategoryClient($id,$request->per_page);
+            if(!$account){
+                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+            }
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
+        
     }
 }

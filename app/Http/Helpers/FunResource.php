@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Helpers;
 
+use Exception;
 use Illuminate\Support\Facades\Auth;
 
 class FunResource{
@@ -21,6 +22,24 @@ class FunResource{
             'token_type' => 'bearer',
             'expires_in' => Auth::factory()->getTTL() * 60
         ]);
+    }
+
+    public static function checkIsAdmin(){
+        try{
+            $user =  response()->json(Auth::guard()->user());
+            if($user && $user->getData()->role === 1){
+                if($user->getData()->banned === 1)
+                {
+                    Auth::logout();
+                    return Redirect(route('tokenNotExist'));
+                }
+                return true;
+            }
+            return false;
+        }catch(Exception $e){
+            return false;
+        }
+       
     }
 }
 ?>

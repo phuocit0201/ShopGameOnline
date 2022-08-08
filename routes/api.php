@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-    //---------------------------------------AUTHENTICATION------------------------------------------
+//-------------------------------------------AUTHENTICATION------------------------------------------
     
     Route::group([
         "middleware"=>"auth_login",
@@ -40,7 +40,7 @@ use Illuminate\Support\Facades\Route;
     
 
 
-    //---------------------------------------AUTHORIZED ADMIN----------------------------------------------
+//--------------------------------------------AUTHORIZED ADMIN----------------------------------------------
     
     Route::group([
         "middleware"=>"auth_admin",
@@ -76,14 +76,13 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::post('/create',[AccountController::class,"store"])->name("createAccount");
-            // Route::get('/show/{id}',[CategoryController::class,"show"])->name("showCategory");
-            // Route::delete('/destroy/{id}',[CategoryController::class,"destroy"])->name("destroyCategory");
-            // Route::put('/update/{id}',[CategoryController::class,"update"])->name("updateCategory");
+            Route::delete('/destroy/{id}',[AccountController::class,"destroy"])->name("destroyAccount");
+            Route::put('/update/{id}',[AccountController::class,"update"])->name("updateAcount");
         });
         //----------------------------------------END------------------------------------------------------
     });
 
-    //----------------------------------------ROUTE PUBLIC----------------------------------------------------
+//---------------------------------------------ROUTE PUBLIC----------------------------------------------------
 
     Route::group([
         "prefix"=>"v1"
@@ -113,7 +112,8 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/index',[AccountController::class,"index"])->name("indexAcounts");
-            Route::get('/account-by-category/{id}',[AccountController::class,"showByCategory"])->name("showByCategory");
+            Route::get('/account-by-category/{id}',[AccountController::class,"showAccountByCategory"])->name("showAccountByCategory");
+            Route::get('/show/{id}',[AccountController::class,"show"])->name("showAccount");
         });
         //------------------------------------------END--------------------------------------------------------
     });

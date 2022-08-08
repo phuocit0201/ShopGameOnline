@@ -32,7 +32,6 @@ class CategoryService{
             $category = CategoryService::find($id);
             if($category !== null){
                 DB::table('categories')->where('id',$id)->update(['status'=>2]);
-                CategoryService::statusAccountByCategory($id,2);
                 return true;
             }
             return false;
@@ -47,24 +46,11 @@ class CategoryService{
             $category = CategoryService::find($id);
             if($category){
                 DB::table('categories')->where('id',$id)->update($data);
-                if($data['status'] === 1){
-                    CategoryService::statusAccountByCategory($id,1);
-                }
                 return true;
             }
             return false;
         }catch(Exception $e){
             return false;
-        }
-    }
-
-    public static function statusAccountByCategory($id,$status)
-    {
-        try{
-            DB::table('account_game')->where('category_id',$id)->update(['status'=>$status]);
-            return;
-        }catch(Exception $e){
-            return;
         }
     }
 

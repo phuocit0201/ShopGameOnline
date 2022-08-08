@@ -89,20 +89,27 @@ class CategoryController extends Controller
      */
     public function update(Request $request,$id)
     {
+        //bắt lỗi người dùng gửi thông tin
         $validator = Validator::make($request->all(),[
             'name' => 'required|max:50|alpha_num',
         ]);
-        $category = [
-            'name' => $request->name,
-            'status' => $request->status 
-        ];
         if($validator->fails()){
             return response()->json([
                 'status' => false,
                 'errors' => $validator->errors()->toArray()
             ]);
         }
+        //khi sửa danh mục chỉ được sửa trạng thái ẩn hoặc hiện k được sửa thành trạng thái xóa
+        if($request->status === 2)
+        {
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+        }
+        $category = [
+            'name' => $request->name,
+            'status' => $request->status 
+        ];
 
+        //thực hiện cập nhật thông tin danh mục
         $update = CategoryService::update($id,$category);
         if(!$update){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
