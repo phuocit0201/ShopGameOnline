@@ -28,7 +28,7 @@ class CategoryController extends Controller
     public function create(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'name'=> 'required|max:50|alpha_num',
+            'name'=> 'required|max:50',
         ]);
         if($validator->fails()){
             return response()->json([

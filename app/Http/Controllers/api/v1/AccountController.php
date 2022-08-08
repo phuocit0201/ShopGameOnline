@@ -44,9 +44,9 @@ class AccountController extends Controller
     {
         //bắt lỗi thông tin người dùng gửi lên
         $validator = Validator::make($request->all(),[
-            'info1' => 'required|max:50|alpha_num',
-            'info2' => 'required|max:50|alpha_num',
-            'info3' => 'required|max:50|alpha_num',
+            'info1' => 'required|max:50',
+            'info2' => 'required|max:50',
+            'info3' => 'required|max:50',
             'import_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'category_id' => 'required|numeric',
@@ -142,7 +142,7 @@ class AccountController extends Controller
         if(!$update){
             return FunResource::responseNoData(false,Mess::$ACCOUNT_NOT_EXIST,404);
         }
-        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,AccountService::getAccountByIdAdmin($id),200);
     }
 
     /**
