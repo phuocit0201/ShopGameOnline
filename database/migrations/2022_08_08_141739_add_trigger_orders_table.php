@@ -21,10 +21,12 @@ return new class extends Migration
                 declare after_money double;
                 declare befor_money double;
                 declare check_buy int;
+                declare check_banned int;
                 select sale_price into price_account  from account_game where id = new.account_id;
+                select banned into check_banned  from users where id = new.user_id;
                 select money into after_money from users where id = new.user_id;
                 select status into check_buy from account_game where id = new.account_id;
-                if(after_money < price_account || check_buy != 0) then
+                if(after_money < price_account || check_buy != 0 || check_banned = 1) then
                     SIGNAL sqlstate "45001" set message_text = "error";
                 else
                     set befor_money = after_money - price_account;

@@ -91,7 +91,7 @@ class AccountController extends Controller
                 return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
             }
         }
-        //nếu không phải thì chỉ show những account có trạng thái hiển thị
+        //nếu không phải admin thì chỉ show những account có trạng thái hiển thị
         else{
             $account = AccountService::getAccountByIdClient($id);
             if(!$account){

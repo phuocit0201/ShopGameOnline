@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\v1\AccountController;
 use App\Http\Controllers\api\v1\CategoryController;
+use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
 use Illuminate\Support\Facades\Route;
@@ -23,8 +24,15 @@ use Illuminate\Support\Facades\Route;
         });
         //---------------------------------------END---------------------------------------------------------
 
-        //-----------------------------------ROUTE CATEGORIES------------------------------------------------
-        
+        //-----------------------------------ROUTE ORRDERS------------------------------------------------
+        Route::group([
+            "prefix"=>"orders"
+        ],
+        function(){
+            Route::post('/create',[OrderController::class,"store"])->name("createOrder");
+            // Route::post('/logout',[UserController::class,"logout"])->name("logout");
+            // Route::put('/change-password',[UserController::class,"changePassword"])->name("changePassword");
+        });
         //----------------------------------------END--------------------------------------------------------
     });
     

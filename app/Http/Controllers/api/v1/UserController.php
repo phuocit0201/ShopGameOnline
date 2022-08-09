@@ -199,6 +199,11 @@ class UserController extends Controller
         }
         //nếu action = 1 thì trừ tiền
         else if($request->action === 1){
+            //nếu số tiền trừ lớn hơn số tiền hiện có thì báo lỗi
+            if($request->money > $user->money)
+            {
+                return FunResource::responseNoData(false,Mess::$DOWN_MOENY_ERROR,404);
+            }
             $data["money"] = $user->money - $request->money;
             $user->update($data);
             $transHtr['transaction_money'] = "-".$request->money;

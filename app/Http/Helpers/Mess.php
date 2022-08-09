@@ -18,6 +18,8 @@ class Mess{
     public static $CONFIRM_PASSWORD_INCORRECT = "Confirm password is incorrect";
     public static $CATEGORY_NOT_EXIST = "This category not exist";
     public static $ACCOUNT_NOT_EXIST = "This account not exist on the system";
+    public static $MONEY_NOT_ENOUGH = "The amount in your account is not enough! Please top up";
+    public static $DOWN_MOENY_ERROR = "Reduction amount must be less than existing amount";
 
 }
 
