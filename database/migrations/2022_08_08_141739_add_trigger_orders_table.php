@@ -15,7 +15,7 @@ return new class extends Migration
     public function up()
     {
         DB::unprepared('
-            create trigger UpdateMoneyUser after insert on orders for each row
+            create trigger buy_account_game after insert on orders for each row
             begin
                 declare price_account double;
                 declare after_money double;
@@ -30,8 +30,8 @@ return new class extends Migration
                     set befor_money = after_money - price_account;
                     update users set money = befor_money where id = new.user_id;
                     update account_game set status = 3 where id = new.account_id;
-                    insert into transaction_history (user_id,action_id,action_flag,after_money,transaction_money,befor_money,created_at,updated_at)
-                    values(new.user_id,new.id,1,after_money,concat("-",price_account),befor_money,current_time(),current_time());
+                    insert into transaction_history (user_id,action_id,action_flag,after_money,transaction_money,befor_money,note,created_at,updated_at)
+                    values(new.user_id,new.id,1,after_money,concat("-",price_account),befor_money,"Mua nick",current_time(),current_time());
                 end if;
             end
         ');

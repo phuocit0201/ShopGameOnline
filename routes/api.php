@@ -43,7 +43,7 @@ use Illuminate\Support\Facades\Route;
         function(){
             Route::get('/index',[UserController::class,"index"])->name("userIndex");
             Route::get('/show/{id}',[UserController::class,"show"])->name("userShow");
-            //Route::post('/delete/{id}',[UserController::class,"destroy"])->name("userDestroy");
+            Route::post('/update-money',[UserController::class,"updateMoney"])->name("userUpdateMoney");
             Route::put('/update/{id}',[UserController::class,"update"])->name("updateUser");
         });
         //-----------------------------------------END--------------------------------------------------------

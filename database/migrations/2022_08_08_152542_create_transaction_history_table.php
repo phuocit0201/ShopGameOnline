@@ -19,8 +19,9 @@ return new class extends Migration
             $table->integer('action_id');
             $table->integer('action_flag');
             $table->double('after_money');
-            $table->double('transaction_money');
+            $table->char('transaction_money',100);
             $table->double('befor_money');
+            $table->char('note',100);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
         });

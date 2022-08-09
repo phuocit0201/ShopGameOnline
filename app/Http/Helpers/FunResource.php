@@ -24,7 +24,8 @@ class FunResource{
         ]);
     }
 
-    public static function checkIsAdmin(){
+    public static function checkIsAdmin()
+    {
         try{
             $user =  response()->json(Auth::guard()->user());
             if($user && $user->getData()->role === 1){
@@ -39,7 +40,6 @@ class FunResource{
         }catch(Exception $e){
             return false;
         }
-       
     }
 }
 ?>

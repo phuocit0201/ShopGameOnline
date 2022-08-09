@@ -8,7 +8,10 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Services\UserService;
 use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
+use App\Http\Services\TransHistoryService;
+use App\Models\TransHistory;
 use Exception;
+use Faker\Provider\UserAgent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
@@ -17,7 +20,7 @@ class UserController extends Controller
     {
         $this->middleware('auth:api', ['except' => 
         [
-            'login','getMe','logout',
+            'login','getMe','logout','updateMoney',
             'index','show','create','destroy','update','changePassword'
         ]]);
         
@@ -120,12 +123,89 @@ class UserController extends Controller
 
     public function update(Request $request,$id)
     {
+        $data = [
+            'name' => $request->name,
+            'role' => $request->role,
+            'banned' => $request->banned,
+            'reason_banned' => $request->reason_banned,
+        ];
+
+        $validator = Validator::make($data,[
+                'role' => 'required|max:1|min:0|numeric',
+                'banned' => 'required|min:0|max:1|numeric',
+                'name'=> 'required|max:50',
+        ]);
+
+        //kiểm tra có lỗi ở những trường hợp trên hay không
+        if ($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+
         $user = UserService::getUserById($id);
         if(!$user){
            return FunResource::responseNoData(false,Mess::$USERNAME_EXIST,401);
         }
-        $user->update($request->all());
+        $user->update($data);
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,UserService::getUserById($id),200);
+    }
+
+    public function updateMoney(Request $request)
+    {
+        $validator = Validator::make($request->all(),[
+                'id' => 'required|numeric',
+                'money' => 'required|min:1|numeric',
+                'action' => 'required|min:0|max:1|numeric',
+                'note' => 'required|max:100'
+        ]);
+
+        //kiểm tra có lỗi ở những trường hợp trên hay không
+        if ($validator->fails()){
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()->toArray()
+            ]);
+        }
+        //kiểm tra xem user cần cộng tiền có hợp lệ hay không
+        $user = UserService::getUserById($request->id);
+        if(!$user || $user->banned === 1){
+           return FunResource::responseNoData(false,Mess::$USERNAME_EXIST,401);
+        }
+
+        //tạo dữ liệu biến động số dư của user
+        $transHtr = [
+            'user_id' => $request->id,
+            'action_id' => 0,
+            'action_flag' =>2,
+            'after_money' => $user->money,
+            'note' => $request->note
+        ];
+
+        //dữ liệu update
+        $data = [
+            'id' => $request->id
+        ];
+        //nếu action = 0 thì tiến hành cộng tiền
+        if($request->action === 0)
+        {
+            $data['money'] = $user->money + $request->money;
+            $user->update($data);
+            //sau khi cộng tiền xong thì thêm vào biến động số dư của user đó
+            $transHtr['transaction_money'] = "+".$request->money;
+            $transHtr['befor_money'] = $data["money"];
+            TransHistoryService::create($transHtr);
+        }
+        //nếu action = 1 thì trừ tiền
+        else if($request->action === 1){
+            $data["money"] = $user->money - $request->money;
+            $user->update($data);
+            $transHtr['transaction_money'] = "-".$request->money;
+            $transHtr['befor_money'] = $data["money"];
+            TransHistoryService::create($transHtr);
+        }
+        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 
     public function login(Request $request)
