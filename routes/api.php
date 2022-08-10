@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\v1\AccountController;
+use App\Http\Controllers\api\v1\CardController;
 use App\Http\Controllers\api\v1\CategoryController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
@@ -31,6 +32,16 @@ use Illuminate\Support\Facades\Route;
         function(){
             Route::post('/create',[OrderController::class,"store"])->name("createOrder");
             Route::get('/order-detail/{id}',[OrderController::class,"orderDetail"])->name("orderDetail");
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+        //-----------------------------------ROUTE CARDS------------------------------------------------
+        Route::group([
+            "prefix"=>"cards"
+        ],
+        function(){
+            Route::get('/history',[CardController::class,"getHistoryByUser"])->name("getHistoryCardByUser");
+            //Route::get('/order-detail/{id}',[OrderController::class,"orderDetail"])->name("orderDetail");
             // Route::post('/logout',[UserController::class,"logout"])->name("logout");
             // Route::put('/change-password',[UserController::class,"changePassword"])->name("changePassword");
         });

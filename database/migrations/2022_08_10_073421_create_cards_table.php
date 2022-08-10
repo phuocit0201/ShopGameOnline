@@ -21,14 +21,14 @@ return new class extends Migration
             $table->char('request_id',50);
             $table->char('seri',50);
             $table->char('code',50);
-            $table->integer('value');
-            $table->integer('status');
-            $table->integer('amount');
+            $table->integer('value')->default(0);
+            $table->integer('status')->default(99);
+            $table->integer('amount')->default(0);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('face_value_id')->references('id')->on('face_value');
         });
-
+        //tạo trigger cộng tiền cho người dùng
         DB::unprepared('
             create trigger UpMoneyCards before update  on cards for each row
             begin

@@ -7,11 +7,11 @@ use Illuminate\Support\Facades\DB;
 
 class TransHistoryService{
     public static function create($transHtr){
-        // try{
+        try{
             return TransHistory::create($transHtr);
-        // }catch(Exception $e){
-        //     return null;
-        // }
+        }catch(Exception $e){
+            return null;
+        }
     }
 }
 ?>
