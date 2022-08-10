@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::post('/create',[OrderController::class,"store"])->name("createOrder");
+            Route::get('/order-detail/{id}',[OrderController::class,"orderDetail"])->name("orderDetail");
             // Route::post('/logout',[UserController::class,"logout"])->name("logout");
             // Route::put('/change-password',[UserController::class,"changePassword"])->name("changePassword");
         });

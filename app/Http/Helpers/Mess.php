@@ -20,7 +20,7 @@ class Mess{
     public static $ACCOUNT_NOT_EXIST = "This account not exist on the system";
     public static $MONEY_NOT_ENOUGH = "The amount in your account is not enough! Please top up";
     public static $DOWN_MOENY_ERROR = "Reduction amount must be less than existing amount";
-
+    public static $ORDER_NOT_EXIST = "This order not exist";
 }
 
 ?>

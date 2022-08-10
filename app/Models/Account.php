@@ -17,6 +17,8 @@ class Account extends Model
         'sale_price',
         'description',
         'status',
-        'category_id'
+        'category_id',
+        'username',
+        'password'
     ];
 }

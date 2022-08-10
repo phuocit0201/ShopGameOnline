@@ -50,7 +50,7 @@ class AccountService{
     {
         return DB::table('account_game')
         ->join('categories','account_game.category_id','=','categories.id')
-        ->select('account_game.*','categories.name')
+        ->select('account_game.*')
         ->where('account_game.status','!=',2)
         ->where('account_game.id',$id)
         ->where('categories.status',0)
@@ -62,7 +62,7 @@ class AccountService{
     {
         return DB::table('account_game')
         ->join('categories','account_game.category_id','=','categories.id')
-        ->select('account_game.*','categories.name')
+        ->select('account_game.*')
         ->where('account_game.status',0)
         ->where('account_game.id',$id)
         ->where('categories.status',0)

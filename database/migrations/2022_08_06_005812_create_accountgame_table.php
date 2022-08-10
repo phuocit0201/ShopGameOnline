@@ -23,6 +23,8 @@ return new class extends Migration
             $table->text('description');
             $table->integer('status')->default(0);
             $table->bigInteger('category_id')->unsigned();
+            $table->char('username',100);
+            $table->char('password',100);
             $table->foreign('category_id')->references('id')->on('categories');
             $table->timestamps();
         });

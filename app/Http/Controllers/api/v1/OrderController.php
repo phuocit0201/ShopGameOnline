@@ -49,4 +49,15 @@ class OrderController extends Controller
         }
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
+
+    //xem lại đơn hàng khách hàng đã mua
+    public function orderDetail($id)
+    {
+        $user = response()->json(Auth::guard()->user());
+        $orderDetail = OrderService::orderDetail($id,$user->getData()->id);
+        if(!$orderDetail){
+            return FunResource::responseNoData(false,Mess::$ORDER_NOT_EXIST,404);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$orderDetail,200);
+    }
 }

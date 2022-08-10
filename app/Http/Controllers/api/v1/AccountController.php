@@ -50,7 +50,9 @@ class AccountController extends Controller
             'import_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'category_id' => 'required|numeric',
-            'description' => 'required'
+            'description' => 'required',
+            'username' => 'required|max:50',
+            'password' => 'required|max:50'
         ]);
 
         //kiểm tra nếu lỗi thì trả về những lỗi đó
@@ -94,10 +96,13 @@ class AccountController extends Controller
         //nếu không phải admin thì chỉ show những account có trạng thái hiển thị
         else{
             $account = AccountService::getAccountByIdClient($id);
-            if(!$account){
+            if($account){
+                unset($account->username,$account->password);
+            }else{
                 return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
             }
         }
+        
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
     }
 
