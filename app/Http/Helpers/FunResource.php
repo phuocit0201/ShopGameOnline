@@ -3,6 +3,8 @@ namespace App\Http\Helpers;
 
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Validator;
 
 class FunResource{
     public static function responseNoData($status,$mess,$code){
@@ -41,5 +43,17 @@ class FunResource{
             return false;
         }
     }
+
+    public static function requestCardTsr($data)
+    {
+        $url = 'https://thesieure.com/chargingws/v2';
+        $partner_key = '4c5daff8a6f7e0ccf572421246915640';
+        $sign = md5($partner_key.'312821445892789'.'10007783347874');
+        $respons = Http::acceptJson([
+            'application/json'
+        ])->post($url,$data);
+        return $respons->body();
+    }
+
 }
 ?>

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\v1\AccountController;
+use App\Http\Controllers\api\v1\CallbackController;
 use App\Http\Controllers\api\v1\CardController;
 use App\Http\Controllers\api\v1\CategoryController;
 use App\Http\Controllers\api\v1\OrderController;
@@ -41,7 +42,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/history',[CardController::class,"getHistoryByUser"])->name("getHistoryCardByUser");
-            //Route::get('/order-detail/{id}',[OrderController::class,"orderDetail"])->name("orderDetail");
+            Route::post('/request-card-tsr',[CardController::class,"requestCardTsr"])->name("requestCardTsr");
             // Route::post('/logout',[UserController::class,"logout"])->name("logout");
             // Route::put('/change-password',[UserController::class,"changePassword"])->name("changePassword");
         });
@@ -124,6 +125,14 @@ use Illuminate\Support\Facades\Route;
             Route::get('/index',[AccountController::class,"index"])->name("indexAcounts");
             Route::get('/account-by-category/{id}',[AccountController::class,"showAccountByCategory"])->name("showAccountByCategory");
             Route::get('/show/{id}',[AccountController::class,"show"])->name("showAccount");
+        });
+        //------------------------------------------END--------------------------------------------------------
+        //---------------------------------------ACCOUNTS----------------------------------------------------
+        Route::group([
+            "prefix"=>"callback"
+        ],
+        function(){
+            Route::post('/callbacktsr',[CallbackController::class,"callbackTsr"])->name("callbackTsr");
         });
         //------------------------------------------END--------------------------------------------------------
     });

@@ -13,7 +13,7 @@ class Card extends Model
         'user_id',
         'face_value_id',
         'request_id',
-        'seri',
+        'serial',
         'code',
         'value',
         'status',

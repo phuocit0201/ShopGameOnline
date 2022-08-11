@@ -21,6 +21,8 @@ class Mess{
     public static $MONEY_NOT_ENOUGH = "The amount in your account is not enough! Please top up";
     public static $DOWN_MOENY_ERROR = "Reduction amount must be less than existing amount";
     public static $ORDER_NOT_EXIST = "This order not exist";
+    public static $CARD_NOT_EXIST = "This card not exists on the system";
+    public static $INVALID_SIGNATURE = "Invalid signature";
 }
 
 ?>

@@ -19,7 +19,7 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->bigInteger('face_value_id')->unsigned();
             $table->char('request_id',50);
-            $table->char('seri',50);
+            $table->char('serial',50);
             $table->char('code',50);
             $table->integer('value')->default(0);
             $table->integer('status')->default(99);
@@ -47,7 +47,7 @@ return new class extends Migration
                     else
                     -- trường hợp thẻ đúng nhưng khai báo sai mệnh giá nên bị phạt
                         select penalty into _penalty from face_value fv join cards c on fv.id = c.face_value_id where c.id = new.id;
-                        set _amount = (_value * (100 - _fees - _penalty)) / 100;
+                        set _amount = (_value * (100 - _penalty)) / 100;
                     end if;
                     -- gán số tiền sau khi nạp thẻ thành công
                     set befor_money = after_money + _amount;
