@@ -28,7 +28,34 @@ class FaceValueService{
     public static function show($id)
     {
         try{
-            return DB::table('face_value')->where('id',$id)->where('status',0)->first();
+            return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
+            ->where('telco.status','!=',2)
+            ->where('id',$id)
+            ->where('status','!=',2)
+            ->first();
+        }catch(Exception $e){
+            return null;
+        }
+    }
+
+    //kiểm tra xem cái thẻ này đã tồn tại trên database chưa
+    public static function checkFaceValue($telco_id,$price)
+    {
+        return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
+        ->where('face_value.telco_id',$telco_id)
+        ->where('telco.status','!=',2)
+        ->where('face_value.status','!=',2)
+        ->where('face_value.price',$price)->count();
+    }
+
+    public static function getByTelco($telco_id){
+        try{
+            return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
+            ->select('face_value.*')
+            ->where('face_value.telco_id',$telco_id)
+            ->where('telco.status',0)
+            ->where('face_value.status',0)
+            ->get();
         }catch(Exception $e){
             return null;
         }

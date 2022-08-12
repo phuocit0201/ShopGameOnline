@@ -47,13 +47,26 @@ class FunResource{
     public static function requestCardTsr($data)
     {
         $url = 'https://thesieure.com/chargingws/v2';
-        $partner_key = '4c5daff8a6f7e0ccf572421246915640';
-        $sign = md5($partner_key.'312821445892789'.'10007783347874');
         $respons = Http::acceptJson([
             'application/json'
         ])->post($url,$data);
         return $respons->body();
     }
 
+    public static function ErrorkPriceCard($price){
+        //số đầu tiên của mệnh giá thẻ phải khác 0
+        $price.="";
+        if($price[0] == 0){
+            return true;
+        }
+        //mệnh giá thẻ phải tròn ví dụ 10000, 200000 chứ không có 15000,250000
+        for($i = 1; $i < strlen($price); $i++)
+        {
+            if($price[$i] != 0){
+                return true;
+            }
+        }
+        return false;
+    }
 }
 ?>

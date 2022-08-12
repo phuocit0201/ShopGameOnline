@@ -4,6 +4,7 @@ use App\Http\Controllers\api\v1\AccountController;
 use App\Http\Controllers\api\v1\CallbackController;
 use App\Http\Controllers\api\v1\CardController;
 use App\Http\Controllers\api\v1\CategoryController;
+use App\Http\Controllers\api\v1\FaceValueController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
@@ -43,8 +44,15 @@ use Illuminate\Support\Facades\Route;
         function(){
             Route::get('/history',[CardController::class,"getHistoryByUser"])->name("getHistoryCardByUser");
             Route::post('/request-card-tsr',[CardController::class,"requestCardTsr"])->name("requestCardTsr");
-            // Route::post('/logout',[UserController::class,"logout"])->name("logout");
-            // Route::put('/change-password',[UserController::class,"changePassword"])->name("changePassword");
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+        //-----------------------------------ROUTE FACEVALUE------------------------------------------------
+        Route::group([
+            "prefix"=>"facevalue"
+        ],
+        function(){
+            Route::get('/card-by-telco/{id}',[FaceValueController::class,"getByTelco"])->name("getCardByTelco");
         });
         //----------------------------------------END--------------------------------------------------------
     });
@@ -91,6 +99,17 @@ use Illuminate\Support\Facades\Route;
             Route::put('/update/{id}',[AccountController::class,"update"])->name("updateAcount");
         });
         //----------------------------------------END------------------------------------------------------
+
+        //-----------------------------------ROUTE FACEVALUE------------------------------------------------
+         Route::group([
+            "prefix"=>"facevalue"
+        ],
+        function(){
+            Route::post('/create',[FaceValueController::class,"create"])->name("createFacevalue");
+            Route::delete('/destroy/{id}',[FaceValueController::class,"destroy"])->name("deleteFacevalue");
+            Route::put('/update/{id}',[FaceValueController::class,"update"])->name("updateFacevalue");
+        });
+        //----------------------------------------END--------------------------------------------------------
     });
 
 //---------------------------------------------ROUTE PUBLIC----------------------------------------------------

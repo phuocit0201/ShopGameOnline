@@ -23,6 +23,9 @@ class Mess{
     public static $ORDER_NOT_EXIST = "This order not exist";
     public static $CARD_NOT_EXIST = "This card not exists on the system";
     public static $INVALID_SIGNATURE = "Invalid signature";
+    public static $TELCO_NOT_EXIST ="This telco not exists on the system";
+    public static $CARD_EXIST ="This card already exists on the system";
+    public static $INVALID_CARD_PRICE = "Invalid card price";
 }
 
 ?>

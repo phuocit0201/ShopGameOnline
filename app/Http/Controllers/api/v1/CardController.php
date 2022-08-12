@@ -62,6 +62,8 @@ class CardController extends Controller
             'sign' => $sign,
             'command'=>'charging'
         ];
+
+        //gửi card lên thesieure.com
         $respons = FunResource::requestCardTsr($card);
         //gửi thẻ thành công lên thẻ siêu rẻ thì thêm thẻ này vào database
         $result = json_decode($respons,true);
