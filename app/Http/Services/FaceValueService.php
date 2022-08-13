@@ -31,7 +31,7 @@ class FaceValueService{
             return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
             ->where('telco.status','!=',2)
             ->where('id',$id)
-            ->where('status','!=',2)
+            ->where('face_value.status','!=',2)
             ->first();
         }catch(Exception $e){
             return null;

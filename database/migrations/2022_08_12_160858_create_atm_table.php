@@ -20,8 +20,8 @@ return new class extends Migration
             $table->text('token');
             $table->text('note');
             $table->integer('status');
-            $table->bigInteger('type_atm')->unsigned();
-            $table->foreign('type_atm')->references('id')->on('type_atm');
+            $table->bigInteger('bank_id')->unsigned();
+            $table->foreign('bank_id')->references('id')->on('banks');
             $table->timestamps();
         });
     }

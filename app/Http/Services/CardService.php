@@ -19,6 +19,8 @@ class CardService{
     {
         return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
         ->select('face_value.price','telco.telco_name')
+        ->where('telco.status',0)
+        ->where('face_value.status',0)
         ->where('face_value.id',$id)->first();
     }
 
@@ -44,6 +46,15 @@ class CardService{
             return true;
         }catch(Exception $e){
             return false;
+        }
+    }
+
+    public static function getCardByRequestId($requestId)
+    {
+        try{
+            return DB::table('cards')->where('request_id',$requestId)->first();
+        }catch(Exception $e){
+            return null;
         }
     }
 }

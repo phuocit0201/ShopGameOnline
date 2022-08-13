@@ -14,12 +14,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('type_atm', function (Blueprint $table) {
+        Schema::create('banks', function (Blueprint $table) {
             $table->id();
-            $table->char('atm_name',50);
+            $table->char('bank_name',50);
         });
         DB::unprepared('
-            insert into type_atm(atm_name) values
+            insert into banks(bank_name) values
             ("ACB"),("TECHCOMBANK"),("VIETCOMBANK"),("TPBANK"),("MBBANK");
         ');
     }

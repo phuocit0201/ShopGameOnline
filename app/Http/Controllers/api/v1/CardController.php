@@ -31,12 +31,11 @@ class CardController extends Controller
 
     public function requestCardTsr(Request $request)
     {
-        //nếu loại thẻ không hợp lệ thì báo lỗi
-        if(!FaceValueService::show($request->id)){
-            return FunResource::responseNoData(false,Mess::$CARD_NOT_EXIST,400);
-        }
         //lấy ra thông tin mệnh giá và nhà mạng mà người dùng gửi
         $face_value = CardService::getFaceValueCard($request->id);
+        if(!$face_value){
+            return FunResource::responseNoData(false,Mess::$CARD_NOT_EXIST,400);
+        }
         //nếu là nhà mạng VIETTEL VINA MOBI thì serial và mã thẻ phải là số
         if($face_value->telco_name === 'VIETTEL' || $face_value->telco_name === 'VINAPHONE' || $face_value->telco_name === 'MOBIFONE'){
             $validator = Validator::make($request->all(),[
@@ -48,7 +47,7 @@ class CardController extends Controller
             }
         }
         //request id gửi lên thẻ siêu rẻ = số lượng card hiện tại cộng thêm 1111111111 để khỏi bị trùng
-        $request_id =  CardService::countCards() + 111;
+        $request_id =  CardService::countCards() + 11111;
 
         
         $sign = md5($this->partner_key.$request->code.$request->serial);

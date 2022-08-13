@@ -13,7 +13,13 @@ class CallbackController extends Controller
     private $partner_key = "4c5daff8a6f7e0ccf572421246915640";
     public function callbackTsr(Request $request)
     {
-        $sign = md5($this->partner_key.$request->code.$request->serial);
+        $card = CardService::getCardByRequestId($request->request_id);
+        //nếu không tồn tại thẻ này hoặc thẻ này đã được xử lý thì báo lỗi
+        if(!$card || $card->status != 99){
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
+        }
+        $sign = md5($this->partner_key.$card->code.$card->serial);
+
         if($sign === $request->callback_sign)
         {
             $data = [
