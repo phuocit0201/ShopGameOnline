@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('partner_key');
             $table->text('partner_id');
             $table->text('note');
-            $table->integer('status');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

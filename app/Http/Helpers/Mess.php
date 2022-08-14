@@ -26,6 +26,7 @@ class Mess{
     public static $TELCO_NOT_EXIST ="This telco not exists on the system";
     public static $CARD_EXIST ="This card already exists on the system";
     public static $INVALID_CARD_PRICE = "Invalid card price";
+    public static $NOT_FOUND = "This information could not be found";
 }
 
 ?>

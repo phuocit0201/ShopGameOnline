@@ -17,9 +17,9 @@ return new class extends Migration
             $table->id();
             $table->char('phone_number',20);
             $table->char('full_name',100);
-            $table->text('token');
-            $table->text('note');
-            $table->integer('status');
+            $table->text('access_token');
+            $table->text('note')->nullable();
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

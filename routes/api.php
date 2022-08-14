@@ -5,6 +5,7 @@ use App\Http\Controllers\api\v1\CallbackController;
 use App\Http\Controllers\api\v1\CardController;
 use App\Http\Controllers\api\v1\CategoryController;
 use App\Http\Controllers\api\v1\FaceValueController;
+use App\Http\Controllers\api\v1\MomoController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
@@ -108,6 +109,17 @@ use Illuminate\Support\Facades\Route;
             Route::post('/create',[FaceValueController::class,"create"])->name("createFacevalue");
             Route::delete('/destroy/{id}',[FaceValueController::class,"destroy"])->name("deleteFacevalue");
             Route::put('/update/{id}',[FaceValueController::class,"update"])->name("updateFacevalue");
+        });
+        //----------------------------------------END--------------------------------------------------------
+        //-----------------------------------ROUTE FACEVALUE------------------------------------------------
+        Route::group([
+            "prefix"=>"momo"
+        ],
+        function(){
+            Route::post('/create',[MomoController::class,"create"])->name("createMomo");
+            Route::delete('/destroy/{id}',[MomoController::class,"destroy"])->name("deleteMomo");
+            Route::put('/update/{id}',[MomoController::class,"update"])->name("updateMomo");
+            Route::get('/show/{id}',[MomoController::class,"show"])->name("showMomo");
         });
         //----------------------------------------END--------------------------------------------------------
     });

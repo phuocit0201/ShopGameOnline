@@ -19,7 +19,7 @@ return new class extends Migration
             $table->char('password');
             $table->text('token');
             $table->text('note');
-            $table->integer('status');
+            $table->integer('status')->default(0);
             $table->bigInteger('bank_id')->unsigned();
             $table->foreign('bank_id')->references('id')->on('banks');
             $table->timestamps();
