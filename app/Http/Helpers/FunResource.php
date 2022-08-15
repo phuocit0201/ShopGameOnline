@@ -44,14 +44,19 @@ class FunResource{
         }
     }
 
-    public static function requestCardTsr($data)
+    public static function requestDataPost($url,$data)
     {
-        $url = 'https://thesieure.com/chargingws/v2';
         $respons = Http::acceptJson([
             'application/json'
         ])->post($url,$data);
         return $respons->body();
     }
+
+    public static function requestGet($url)
+    {
+        $respons = Http::get($url);
+        return $respons->body();
+    }  
 
     public static function ErrorkPriceCard($price){
         //số đầu tiên của mệnh giá thẻ phải khác 0

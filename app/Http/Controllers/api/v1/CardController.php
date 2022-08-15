@@ -17,6 +17,7 @@ class CardController extends Controller
     private $user_id;
     private $partner_id = "0354110661";
     private $partner_key = "4c5daff8a6f7e0ccf572421246915640";
+    private $url = "https://thesieure.com/chargingws/v2";
     public function __construct()
     {
         $this->user = response()->json(Auth::guard()->user());
@@ -63,7 +64,7 @@ class CardController extends Controller
         ];
 
         //gửi card lên thesieure.com
-        $respons = FunResource::requestCardTsr($card);
+        $respons = FunResource::requestDataPost($this->url,$card);
         //gửi thẻ thành công lên thẻ siêu rẻ thì thêm thẻ này vào database
         $result = json_decode($respons,true);
         if($result['status'] < 100)

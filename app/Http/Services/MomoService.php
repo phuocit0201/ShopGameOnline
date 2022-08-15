@@ -44,5 +44,25 @@ class MomoService{
             return null;
         }
     }
+
+    public static function getPaginate($perPage)
+    {
+        try{
+            return DB::table('momo')->where('status',0)->paginate($perPage);
+        }catch(Exception $e)
+        {
+            return null;
+        }
+    }
+
+    public static function getAll()
+    {
+        try{
+            return DB::table('momo')->where('status',0)->get();
+        }catch(Exception $e)
+        {
+            return null;
+        }
+    }
 }
 ?>

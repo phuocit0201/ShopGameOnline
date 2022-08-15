@@ -158,12 +158,14 @@ use Illuminate\Support\Facades\Route;
             Route::get('/show/{id}',[AccountController::class,"show"])->name("showAccount");
         });
         //------------------------------------------END--------------------------------------------------------
-        //---------------------------------------ACCOUNTS----------------------------------------------------
+        //---------------------------------------CALLBACK----------------------------------------------------
         Route::group([
             "prefix"=>"callback"
         ],
         function(){
             Route::post('/callbacktsr',[CallbackController::class,"callbackTsr"])->name("callbackTsr");
+            Route::post('/get-history-transfers',[CallbackController::class,"getHistoryTrans"])->name("getHistoryTrans");
+
         });
         //------------------------------------------END--------------------------------------------------------
     });
