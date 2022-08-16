@@ -23,4 +23,9 @@ class SecurityController extends Controller
     {
         return FunResource::responseNoData(false,Mess::$REQUEST_FAILED,401);
     }
+
+    public function keyWebsiteFailed()
+    {
+        return FunResource::responseNoData(false,Mess::$REQUEST_FAILED,401);
+    }
 }

@@ -9,18 +9,18 @@ use App\Http\Services\UserService;
 use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
 use App\Http\Services\TransHistoryService;
-use App\Models\TransHistory;
 use Exception;
-use Faker\Provider\UserAgent;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
+
 class UserController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => 
         [
-            'login','getMe','logout','updateMoney',
+            'login','getMe','logout','updateMoney','refreshToken',
             'index','show','create','destroy','update','changePassword'
         ]]);
         
@@ -245,7 +245,11 @@ class UserController extends Controller
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 
-    
+    public function refreshToken(Request $request)
+    {
+        return $request->server('HTTP_USER_AGENT');
+        return FunResource::respondWithToken(Auth::parseToken()->refresh());
+    }
     // public function destroy($id)
     // {
     //     if(UserService::deleteUser($id))

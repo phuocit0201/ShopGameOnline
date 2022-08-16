@@ -7,6 +7,7 @@ use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
 use App\Http\Services\FaceValueService;
 use App\Http\Services\TelcoService;
+use App\Http\Services\TheSieuReService;
 use App\Models\FaceValue;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -45,7 +46,7 @@ class FaceValueController extends Controller
         if(!$faceValue){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
         }
-        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$faceValue,200);
     }
 
     public function destroy($id){
@@ -76,6 +77,12 @@ class FaceValueController extends Controller
     }
 
     public function getByTelco($id){
+         //kiểm tra xem hệ thống nạp thẻ có bảo trì không
+         $theSieuRe = TheSieuReService::getTSR();
+         if($theSieuRe->status !== 0)
+         {
+             return FunResource::responseNoData(false,Mess::$SYSTEM_MAINTENANCE,401);
+         }
         $cardList = FaceValueService::getByTelco($id);
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$cardList,200);
     }

@@ -15,9 +15,11 @@ return new class extends Migration
     {
         Schema::create('atm', function (Blueprint $table) {
             $table->id();
+            $table->char('account_number',50);
+            $table->char('full_name',100);
             $table->char('username');
             $table->char('password');
-            $table->text('token');
+            $table->text('access_token');
             $table->text('note');
             $table->integer('status')->default(0);
             $table->bigInteger('bank_id')->unsigned();

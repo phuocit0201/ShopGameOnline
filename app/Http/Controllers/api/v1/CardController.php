@@ -7,6 +7,7 @@ use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
 use App\Http\Services\CardService;
 use App\Http\Services\FaceValueService;
+use App\Http\Services\TheSieuReService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -32,6 +33,12 @@ class CardController extends Controller
 
     public function requestCardTsr(Request $request)
     {
+        //kiểm tra xem hệ thống nạp thẻ có bảo trì không
+        $theSieuRe = TheSieuReService::getTSR();
+        if($theSieuRe->status !== 0)
+        {
+            return FunResource::responseNoData(false,Mess::$SYSTEM_MAINTENANCE,401);
+        }
         //lấy ra thông tin mệnh giá và nhà mạng mà người dùng gửi
         $face_value = CardService::getFaceValueCard($request->id);
         if(!$face_value){

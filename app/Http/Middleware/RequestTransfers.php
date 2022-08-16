@@ -18,6 +18,8 @@ class RequestTransfers
     {
         if($request->key == "phuocit"){
             return $next($request);
+        }else{
+            return Redirect(route('keyWebsiteFailed'));
         }
     }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\api\v1\MomoController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
+use App\Http\Controllers\api\v1\TheSieuReController;
 use Illuminate\Support\Facades\Route;
 
 //-------------------------------------------AUTHENTICATION------------------------------------------
@@ -111,7 +112,8 @@ use Illuminate\Support\Facades\Route;
             Route::put('/update/{id}',[FaceValueController::class,"update"])->name("updateFacevalue");
         });
         //----------------------------------------END--------------------------------------------------------
-        //-----------------------------------ROUTE FACEVALUE------------------------------------------------
+
+        //-----------------------------------ROUTE MOMO------------------------------------------------
         Route::group([
             "prefix"=>"momo"
         ],
@@ -120,6 +122,15 @@ use Illuminate\Support\Facades\Route;
             Route::delete('/destroy/{id}',[MomoController::class,"destroy"])->name("deleteMomo");
             Route::put('/update/{id}',[MomoController::class,"update"])->name("updateMomo");
             Route::get('/show/{id}',[MomoController::class,"show"])->name("showMomo");
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+         //-----------------------------------ROUTE THESIEURE------------------------------------------------
+         Route::group([
+            "prefix"=>"thesieure"
+        ],
+        function(){
+            Route::put('/update/{id}',[TheSieuReController::class,"update"])->name("updateTSR");
         });
         //----------------------------------------END--------------------------------------------------------
     });
@@ -135,6 +146,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::post('/login',[UserController::class,"login"])->name("login");
+            Route::get('/refresh',[UserController::class,"refreshToken"])->name("refreshToken");
             Route::post('/create',[UserController::class,"create"])->name("createUser");
         });
         //------------------------------------------END--------------------------------------------------------
@@ -164,7 +176,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::post('/callbacktsr',[CallbackController::class,"callbackTsr"])->name("callbackTsr");
-            Route::post('/get-history-transfers',[CallbackController::class,"getHistoryTrans"])->name("getHistoryTrans");
+            Route::post('/get-history-transfers',[CallbackController::class,"getHistoryTrans"])->name("getHistoryTrans")->middleware('request_trans');
 
         });
         //------------------------------------------END--------------------------------------------------------
@@ -174,6 +186,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/unauthorized',[SecurityController::class,"unauthorized"])->name("unauthorized");
 Route::get('/token-Not-Exist',[SecurityController::class,"tokenNotExist"])->name("tokenNotExist");
 Route::get('/request-failed',[SecurityController::class,'securityRequest'])->name('securityRequest');
+Route::get('/key-website-failed',[SecurityController::class,'keyWebsiteFailed'])->name('keyWebsiteFailed');
 
 
 
