@@ -171,7 +171,7 @@ class UserController extends Controller
         //kiểm tra xem user cần cộng tiền có hợp lệ hay không
         $user = UserService::getUserById($request->id);
         if(!$user || $user->banned === 1){
-           return FunResource::responseNoData(false,Mess::$USERNAME_EXIST,401);
+           return FunResource::responseNoData(false,Mess::$USER_NOT_EXIST,401);
         }
 
         //tạo dữ liệu biến động số dư của user

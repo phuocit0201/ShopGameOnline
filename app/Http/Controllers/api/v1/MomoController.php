@@ -11,34 +11,14 @@ use Illuminate\Support\Facades\Validator;
 
 class MomoController extends Controller
 {
-    public function create(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'phone_number' => 'required|min:10|max:11|unique:momo',
-            'full_name' => 'required',
-            'access_token' => 'required'
-        ]);
-        if($validator->fails()){
-            return FunResource::responseData(false,Mess::$INVALID_INFO,$validator->errors()->toArray(),400);
-        }
-        $data = [
-            'phone_number' => $request->phone_number,
-            'full_name' => $request->full_name,
-            'access_token' => $request->access_token
-        ];
-        $momo = MomoService::create($data);
-        if(!$momo){
-            return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
-        }
-        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$momo,200);
-    }
-
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
         $validator = Validator::make($request->all(),[
             'phone_number' => 'required|min:10|max:11',
             'full_name' => 'required',
-            'access_token' => 'required'
+            'access_token' => 'required',
+            'link_logo' => 'required',
+            'status' => 'min:0|max:1'
         ]);
         if($validator->fails()){
             return FunResource::responseData(false,Mess::$INVALID_INFO,$validator->errors()->toArray(),400);
@@ -46,29 +26,19 @@ class MomoController extends Controller
         $data = [
             'phone_number' => $request->phone_number,
             'full_name' => $request->full_name,
-            'access_token' => $request->access_token
+            'access_token' => $request->access_token,
+            'link_logo' => $request->link_logo,
+            'status' => $request->status
         ];
-        $update = MomoService::update($id,$data);
+        $update = MomoService::update($data);
         if(!$update){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
         }
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
-
-    public function destroy($id){
-        if(!MomoService::show($id)){
-            return FunResource::responseNoData(false,Mess::$NOT_FOUND,400);
-        }
-        $delete = MomoService::destoy($id);
-        if(!$delete){
-            return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
-        }
-        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
-    }
-
-    public static function show($id)
+    public static function get()
     {
-        $momo = MomoService::show($id);
+        $momo = MomoService::get();
         if(!$momo){
             return FunResource::responseNoData(false,Mess::$NOT_FOUND,400);
         }

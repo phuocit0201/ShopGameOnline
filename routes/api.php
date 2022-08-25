@@ -118,10 +118,8 @@ use Illuminate\Support\Facades\Route;
             "prefix"=>"momo"
         ],
         function(){
-            Route::post('/create',[MomoController::class,"create"])->name("createMomo");
-            Route::delete('/destroy/{id}',[MomoController::class,"destroy"])->name("deleteMomo");
-            Route::put('/update/{id}',[MomoController::class,"update"])->name("updateMomo");
-            Route::get('/show/{id}',[MomoController::class,"show"])->name("showMomo");
+            Route::put('/update',[MomoController::class,"update"])->name("updateMomo");
+            Route::get('/get',[MomoController::class,"get"])->name("showMomo");
         });
         //----------------------------------------END--------------------------------------------------------
 
@@ -176,7 +174,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::post('/callbacktsr',[CallbackController::class,"callbackTsr"])->name("callbackTsr");
-            Route::post('/get-history-transfers',[CallbackController::class,"getHistoryTrans"])->name("getHistoryTrans")->middleware('request_trans');
+            Route::get('/get-history-transfers',[CallbackController::class,"getHistoryTrans"])->name("getHistoryTrans")->middleware('request_trans');
 
         });
         //------------------------------------------END--------------------------------------------------------

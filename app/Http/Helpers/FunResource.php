@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Helpers;
 
+use App\Http\Services\TransHistoryService;
+use App\Http\Services\UserService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
@@ -72,6 +74,34 @@ class FunResource{
             }
         }
         return false;
+    }
+
+    public static function parseComment($command,$comment){
+        $re = '/'.$command.'\d+/im';
+        preg_match_all($re, $comment, $matches, PREG_SET_ORDER, 0);
+        if (count($matches) == 0 )
+            return null;
+        // Print the entire match result
+        $orderCode = $matches[0][0];
+        $prefixLength = strlen($command);
+        $orderId = intval(substr($orderCode, $prefixLength ));
+        return $orderId ;
+    }
+
+    public static function upMoneyForUser($data){
+        //kiểm tra xem user cần cộng tiền có tồn tại trên hệ thống không
+        $user = UserService::getUserById($data['user_id']);
+        if(!$user){
+            return false;
+        }
+        $data['after_money'] = $user->money;
+        $data['befor_money'] = $user->money + $data['transaction_money'];
+        $transHistory = TransHistoryService::create($data);
+        if(!$transHistory){
+            return false;
+        }
+        $user->update(['money'=>$data['befor_money']]);
+        return true;
     }
 }
 ?>

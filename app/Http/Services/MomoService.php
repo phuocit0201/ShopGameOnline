@@ -6,59 +6,20 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 
 class MomoService{
-    public static function create($momo)
+    public static function update($data)
     {
         try{
-            return Momo::create($momo);
-        }catch(Exception $e){
-            return null;            
-        }
-    }
-
-    public static function update($id,$data)
-    {
-        try{
-            DB::table('momo')->where('id',$id)->update($data);
+            DB::table('momo')->update($data);
             return true;
         }catch(Exception $e){
             return false;
         }
     }
 
-    public static function destoy($id)
+    public static function get()
     {
         try{
-            DB::table('momo')->delete($id);
-            return true;
-        }catch(Exception $e)
-        {
-            return false;
-        }
-    }
-
-    public static function show($id)
-    {
-        try{
-            return DB::table('momo')->where('id',$id)->first();
-        }catch(Exception $e){
-            return null;
-        }
-    }
-
-    public static function getPaginate($perPage)
-    {
-        try{
-            return DB::table('momo')->where('status',0)->paginate($perPage);
-        }catch(Exception $e)
-        {
-            return null;
-        }
-    }
-
-    public static function getAll()
-    {
-        try{
-            return DB::table('momo')->where('status',0)->get();
+            return DB::table('momo')->where('status',0)->first();
         }catch(Exception $e)
         {
             return null;

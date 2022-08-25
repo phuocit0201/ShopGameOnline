@@ -41,22 +41,23 @@ class CallbackController extends Controller
     {
         $type_transfers = ['MOMO','THESIEURE'];
         //xử lý lịch sử giao dịch momo
-        $momoList = MomoService::getAll();
-        if($momoList){
-            foreach($momoList as $key => $historyMomo)
-            {
-                $urlMomo = "http://localhost/test/FakeAPI/HistoryMomo.php?token=$historyMomo->access_token";
+            $momo = MomoService::get();
+            if($momo){
+                $urlMomo = "http://localhost/test/FakeAPI/HistoryMomo.php?token=$momo->access_token";
                 $resultMomo = json_decode(FunResource::requestGet($urlMomo),true);
                 if($resultMomo){
                     foreach($resultMomo['momoMsg']['tranList'] as $key => $values)
                     {
-                        //nếu giao dịch này chưa có trong database mới thực hiện insert vào db
                         $checkTransMomoExist = TransferService::checkTransExist($type_transfers[0],$values['tranId']);
-                        $user_id = explode(' ',$values['comment'])[1];
-                        $command = explode(' ',$values['comment'])[0];
+
+                        if(!$values['comment'] || strpos($values['comment'],'NAPTIEN') === false || $checkTransMomoExist === 1 || $values['io'] != 1){
+                            continue;
+                        }
+                       
+                        $user_id = FunResource::parseComment('NAPTIEN',$values["comment"]);
                         $checkUserExist = UserService::getUserById($user_id);
-                        //nếu lịch sử này chưa có trong db và user cộng tiền tồn tại và cú pháp nạp tiền đúng
-                        if($checkTransMomoExist === 0 && $checkUserExist && $values['io'] == 1 && strtoupper($command) === "NAPTIEN"){
+                        //nếu user tồn tại thì tiến hành insert vào database và cộng tiền
+                        if($checkUserExist){
                             $transfer = [
                                 'user_id' => $user_id,
                                 'type_transfer' => $type_transfers[0],
@@ -64,15 +65,23 @@ class CallbackController extends Controller
                                 'message' => $values['comment'],
                                 'amount' =>$values['amount'],
                             ];
-                            //insert giao dịch vào db trigger sẽ tự động cộng tiền
-                            TransferService::create($transfer);
+
+                            $insertTransMomo = TransferService::create($transfer);
+                            if($insertTransMomo){
+                                $transHistory = [
+                                    'action_id'=>$insertTransMomo->id,
+                                    'action_flag' =>4,
+                                    'user_id'=> $user_id,
+                                    'transaction_money'=> "+".$values['amount'],
+                                    'note'=>'Nap tien MOMO',
+                                ];
+                                //cộng tiền cho user
+                                FunResource::upMoneyForUser($transHistory);
+                            }
                         }
-                        
                     }
                 }
             }
-        }
-        
         //xử lý lịch sử giao dịch thẻ siêu rẻ
         $thesieure = TheSieuReService::getTSR();
         if($thesieure){
@@ -81,12 +90,15 @@ class CallbackController extends Controller
             if($resultTSR){
                 foreach ($resultTSR['tranList'] as $key => $values)
                 {
-                    $user_id = explode(' ',$values['description'])[1];
-                    $command = explode(' ',$values['description'])[0];
-                    $checkUserExist = UserService::getUserById($user_id);
                     $checkTransTSRExist = TransferService::checkTransExist($type_transfers[1],$values['tranId']);
-                    //nếu giao dịch chưa có trong db và user cộng tiền tồn tại và số tiền không âm và lệnh cồn tiền đúng
-                    if($checkTransTSRExist === 0 && $checkUserExist && $values['amount'][0] != '-' && strtoupper($command) === "NAPTIEN")
+                    if($checkTransTSRExist === 1 || $values['amount'][0] === '-' || strpos($values['description'],'NAPTIEN') === false){
+                        continue;
+                    }
+                    $user_id = FunResource::parseComment('NAPTIEN',$values["description"]);
+                    $checkUserExist = UserService::getUserById($user_id);
+                    
+                    //nếu user tồn tại thì cộng tiền cho user đó
+                    if($checkUserExist)
                     {
                         $transfer = [
                             'user_id' => $user_id,
@@ -96,7 +108,18 @@ class CallbackController extends Controller
                             'amount' =>$values['amount'],
                         ];
                         //insert giao dịch vào db trigger sẽ tự động cộng tiền
-                        TransferService::create($transfer);
+                        $insertTransTSR = TransferService::create($transfer);
+                        if($insertTransTSR){
+                            $transHistory = [
+                                'action_id'=>$insertTransTSR->id,
+                                'action_flag' =>4,
+                                'user_id'=> $user_id,
+                                'transaction_money'=> "+".$values['amount'],
+                                'note'=>'Nap tien the sieu re',
+                            ];
+                            //cộng tiền cho user đồng thời 
+                            FunResource::upMoneyForUser($transHistory);
+                        }
                     }
                 }
             }
