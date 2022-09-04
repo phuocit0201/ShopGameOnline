@@ -70,7 +70,7 @@ class FaceValueController extends Controller
         if(!FaceValueService::show($id)){
             return FunResource::responseNoData(false,Mess::$CARD_NOT_EXIST,400);
         }
-        if(!FaceValueService::update($id,["status"=>1])){
+        if(!FaceValueService::update($id,["status"=>$request->status])){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
         }
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);

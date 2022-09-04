@@ -25,7 +25,7 @@ return new class extends Migration
             $table->foreign('user_id')->references('id')->on('users');
         });
 
-        DB::unprepared('
+        /*DB::unprepared('
             create trigger tranfers after insert on transfers for each row
             begin
                 declare after_money double;
@@ -42,7 +42,7 @@ return new class extends Migration
                     SIGNAL sqlstate "45001" set message_text = "transfers exist";
                 end if;
             end
-        ');
+        ');*/
     }
 
     /**

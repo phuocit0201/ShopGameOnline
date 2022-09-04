@@ -30,7 +30,7 @@ class FaceValueService{
         try{
             return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
             ->where('telco.status','!=',2)
-            ->where('id',$id)
+            ->where('face_value.id',$id)
             ->where('face_value.status','!=',2)
             ->first();
         }catch(Exception $e){
@@ -38,6 +38,19 @@ class FaceValueService{
         }
     }
 
+    //lấy thông tin thẻ cào với điều kiện mệnh giá và nhà mạng
+    public static function getByPriceAndTelco($price,$telco){
+        try{
+            return DB::table('face_value')->join('telco','face_value.telco_id','=','telco.id')
+            ->where('telco.status','!=',2)
+            ->where('telco.id',$telco)
+            ->where('face_value.price',$price)
+            ->where('face_value.status','!=',2)
+            ->first();
+        }catch(Exception $e){
+            return null;
+        }
+    }
     //kiểm tra xem cái thẻ này đã tồn tại trên database chưa
     public static function checkFaceValue($telco_id,$price)
     {

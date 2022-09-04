@@ -11,13 +11,14 @@ class Card extends Model
     protected $table = 'cards';
     protected $fillable = [
         'user_id',
-        'face_value_id',
-        'request_id',
+        'telco',
+        'declare_value',
+        'fees',
+        'penalty',
         'serial',
         'code',
         'value',
-        'status',
         'amount',
-        ''
+        'status',
     ];
 }

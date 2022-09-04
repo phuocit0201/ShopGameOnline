@@ -39,20 +39,28 @@ class CardService{
         return DB::table('cards')->count();
     }
 
-    public static function update($requestId,$data)
+    public static function update($telco,$serial,$code,$data)
     {
-        try{
-            DB::table('cards')->where('request_id',$requestId)->update($data);
+        //try{
+            DB::table('cards')
+            ->where('serial',$serial)
+            ->where('code',$code)
+            ->where('telco',$telco)
+            ->update($data);
             return true;
-        }catch(Exception $e){
-            return false;
-        }
+        // }catch(Exception $e){
+        //     return false;
+        // }
     }
 
-    public static function getCardByRequestId($requestId)
+    public static function getCardByRequestId($code,$serial,$telco)
     {
         try{
-            return DB::table('cards')->where('request_id',$requestId)->first();
+            return DB::table('cards')
+            ->where('code',$code)
+            ->where('serial',$serial)
+            ->where('telco',$telco)
+            ->first();
         }catch(Exception $e){
             return null;
         }

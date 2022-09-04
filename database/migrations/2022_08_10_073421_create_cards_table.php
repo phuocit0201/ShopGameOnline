@@ -17,19 +17,22 @@ return new class extends Migration
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('face_value_id')->unsigned();
-            $table->char('request_id',50);
+            //$table->bigInteger('face_value_id')->unsigned();
+            $table->char('telco',20);
+            $table->integer('declare_value');
+            $table->integer('fees');
+            $table->integer('penalty');
             $table->char('serial',50);
             $table->char('code',50);
             $table->integer('value')->default(0);
-            $table->integer('status')->default(99);
             $table->integer('amount')->default(0);
+            $table->integer('status')->default(99);
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('face_value_id')->references('id')->on('face_value');
+            //$table->foreign('face_value_id')->references('id')->on('face_value');
         });
         //tạo trigger cộng tiền cho người dùng
-        DB::unprepared('
+        /*DB::unprepared('
             create trigger UpMoneyCards before update  on cards for each row
             begin
                 declare _fees double; declare _amount double; declare _value double;
@@ -60,7 +63,7 @@ return new class extends Migration
                     set new.amount = _amount;
                 end if;
             end
-        ');
+        ');*/
     }
 
     /**

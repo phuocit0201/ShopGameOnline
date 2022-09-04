@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
 use App\Http\Services\CardService;
+use App\Http\Services\FaceValueService;
 use App\Http\Services\MomoService;
 use App\Http\Services\TheSieuReService;
 use App\Http\Services\TransferService;
@@ -18,7 +19,7 @@ class CallbackController extends Controller
     //nhận dữ liệu callback từ thẻ siêu rẻ
     public function callbackTsr(Request $request)
     {
-        $card = CardService::getCardByRequestId($request->request_id);
+        $card = CardService::getCardByRequestId($request->code,$request->serial,$request->telco);
         //nếu không tồn tại thẻ này hoặc thẻ này đã được xử lý thì báo lỗi
         if(!$card || $card->status != 99){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
@@ -31,7 +32,19 @@ class CallbackController extends Controller
                 'value' => $request->value,
                 'status' => $request->status
             ];
-            CardService::update($request->request_id,$data);
+            CardService::update($request->telco,$request->serial,$request->code,$data);
+            if($request->status === 1){
+                //lấy ra thông tin mệnh giá thẻ cào
+                $transHistory = [
+                    'action_id'=>$card->id,
+                    'action_flag' =>3,
+                    'user_id'=> $card->user_id,
+                    'transaction_money'=> "+".$request->amount,
+                    'note'=>'Nap the cao',
+                ];
+                //cộng tiền cho user
+                FunResource::upMoneyForUser($transHistory);
+            }
             return FunResource::responseNoData(true,"thanks",200);
         }
         return FunResource::responseNoData(false,Mess::$INVALID_SIGNATURE,400);

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Helpers;
 
+use App\Http\Services\TheSieuReService;
 use App\Http\Services\TransHistoryService;
 use App\Http\Services\UserService;
 use Exception;
@@ -102,6 +103,18 @@ class FunResource{
         }
         $user->update(['money'=>$data['befor_money']]);
         return true;
+    }
+
+    //kiểm tra xem thẻ cào này tồn tại không
+    public static function checkCard($telco,$value){
+        $url = "https://thesieure.com//chargingws/v2/getfee?partner_id=";
+        $partner_id = TheSieuReService::getTSR()->partner_id;
+        $listCard = json_decode(FunResource::requestGet($url.$partner_id),true);
+        foreach($listCard as $key => $values){
+            if($values['telco'] == $telco && $values['value'] == $value){
+                return $values;
+            }
+        }
     }
 }
 ?>
