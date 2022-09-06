@@ -84,7 +84,7 @@ use Illuminate\Support\Facades\Route;
             "prefix"=>"categories"
         ],
         function(){
-            Route::post('/create',[CategoryController::class,"create"])->name("createCategory");
+            //Route::post('/create',[CategoryController::class,"create"])->name("createCategory");
             Route::get('/show/{id}',[CategoryController::class,"show"])->name("showCategory");
             Route::delete('/destroy/{id}',[CategoryController::class,"destroy"])->name("destroyCategory");
             Route::put('/update/{id}',[CategoryController::class,"update"])->name("updateCategory");

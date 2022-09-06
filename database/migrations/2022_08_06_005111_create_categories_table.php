@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -19,6 +20,11 @@ return new class extends Migration
             $table->integer('status')->default(0);
             $table->timestamps();
         });
+        DB::unprepared('
+            insert into categories(name,created_at) values
+            ("Ninjaschool",current_time()),
+            ("Liên Quân",current_time());
+        ');
     }
 
     /**

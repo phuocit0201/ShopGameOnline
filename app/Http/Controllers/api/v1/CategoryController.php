@@ -25,23 +25,23 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
-    {
-        $validator = Validator::make($request->all(),[
-            'name'=> 'required|max:50',
-        ]);
-        if($validator->fails()){
-            return response()->json([
-                'status' => false,
-                'errors' => $validator->errors()->toArray()
-            ]);
-        }
-        $category = CategoryService::create($request->all());
-        if($category === null){
-            return FunResource::responseNoData(false,Mess::$EXCEPTION,401);
-        }
-        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$category,200);
-    }
+    // public function create(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(),[
+    //         'name'=> 'required|max:50',
+    //     ]);
+    //     if($validator->fails()){
+    //         return response()->json([
+    //             'status' => false,
+    //             'errors' => $validator->errors()->toArray()
+    //         ]);
+    //     }
+    //     $category = CategoryService::create($request->all());
+    //     if($category === null){
+    //         return FunResource::responseNoData(false,Mess::$EXCEPTION,401);
+    //     }
+    //     return FunResource::responseData(true,Mess::$SUCCESSFULLY,$category,200);
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -92,6 +92,7 @@ class CategoryController extends Controller
         //bắt lỗi người dùng gửi thông tin
         $validator = Validator::make($request->all(),[
             'name' => 'required|max:50|alpha_num',
+            'status' => 'required|min:0|max:1|numeric'
         ]);
         if($validator->fails()){
             return response()->json([
@@ -99,11 +100,7 @@ class CategoryController extends Controller
                 'errors' => $validator->errors()->toArray()
             ]);
         }
-        //khi sửa danh mục chỉ được sửa trạng thái ẩn hoặc hiện k được sửa thành trạng thái xóa
-        if($request->status === 2)
-        {
-            return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
-        }
+       
         $category = [
             'name' => $request->name,
             'status' => $request->status 
