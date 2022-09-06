@@ -43,4 +43,32 @@ class TheSieuReController extends Controller
         }
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
+
+    public function getTsrBank()
+    {
+        $theSieuRe = TheSieuReService::getTSR();
+        if($theSieuRe->status_bank != 0)
+        {
+            return FunResource::responseNoData(false,Mess::$NOT_FOUND,400);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$theSieuRe,200);
+    }
+    public function getTsrCard()
+    {
+        $theSieuRe = TheSieuReService::getTSR();
+        if($theSieuRe->status_card != 0)
+        {
+            return FunResource::responseNoData(false,Mess::$NOT_FOUND,400);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$theSieuRe,200);
+    }
+    public function edit()
+    {
+        $theSieuRe = TheSieuReService::getTSR();
+        if(!$theSieuRe->status_card)
+        {
+            return FunResource::responseNoData(false,Mess::$NOT_FOUND,400);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$theSieuRe,200);
+    }
 }

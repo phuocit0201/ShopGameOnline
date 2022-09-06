@@ -35,7 +35,15 @@ class MomoController extends Controller
         }
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
-    public static function get()
+    public function show()
+    {
+        $momo = MomoService::get();
+        if($momo->status != 0){
+            return FunResource::responseNoData(false,Mess::$NOT_FOUND,400);
+        }
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$momo,200);
+    }
+    public function edit()
     {
         $momo = MomoService::get();
         if(!$momo){

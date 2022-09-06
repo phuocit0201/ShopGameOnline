@@ -19,7 +19,7 @@ class MomoService{
     public static function get()
     {
         try{
-            return DB::table('momo')->where('status',0)->first();
+            return DB::table('momo')->first();
         }catch(Exception $e)
         {
             return null;

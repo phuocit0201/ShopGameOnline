@@ -105,5 +105,18 @@ class FunResource{
     public static function site($keyName){
         return SettingService::getValueSettings($keyName)->value;
     }
+
+    public static function urlApiAtm($atm){
+        switch($atm){
+            case 'ACB':
+                return 'historyapiacbv3';
+            case 'TECHCOMBANK':
+                return 'historyapitcbv3';
+            case 'VIETCOMBANK':
+                return 'historyapivcbv3';
+            case 'MBBANK':
+                return 'historyapimbv3';
+        }
+    }
 }
 ?>

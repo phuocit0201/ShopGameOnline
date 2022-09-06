@@ -5,9 +5,9 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
+use App\Http\Services\AtmService;
 use App\Http\Services\CardService;
 use App\Http\Services\MomoService;
-use App\Http\Services\SettingService;
 use App\Http\Services\TheSieuReService;
 use App\Http\Services\TransferService;
 use App\Http\Services\UserService;
@@ -62,10 +62,10 @@ class CallbackController extends Controller
     public function getHistoryTrans()
     {
         try{
-            $type_transfers = ['MOMO','THESIEURE',"ATM"];
+            $type_transfers = ['MOMO','THESIEURE'];
             //xử lý lịch sử giao dịch momo
             $momo = MomoService::get();
-            if($momo){
+            if($momo && $momo->status == 0){
                 $urlMomo = "http://localhost/FakeAPI/HistoryMomo.php?token=$momo->token_api";
                 $resultMomo = json_decode(FunResource::requestGet($urlMomo),true);
                 if($resultMomo){
@@ -106,7 +106,7 @@ class CallbackController extends Controller
                 }
             }
             //xử lý lịch sử giao dịch thẻ siêu rẻ
-            if($this->getTSR){
+            if($this->getTSR->status_bank && $this->getTSR->status_bank == 0){
                 $urlTSR = "http://localhost/FakeAPI/HistoryTSR.php?token=".$this->getTSR->token_api;
                 $resultTSR = json_decode(FunResource::requestGet($urlTSR),true);
                 if($resultTSR){
@@ -140,6 +140,47 @@ class CallbackController extends Controller
                                     'note'=>'Nap tien the sieu re',
                                 ];
                                 //cộng tiền cho user đồng thời 
+                                FunResource::upMoneyForUser($transHistory);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //xử lý giao dịch atm
+            $atm = AtmService::getAtm();
+            if($atm && $atm->status == 0){
+                $type_atm = FunResource::urlApiAtm($atm->bank_name);
+                $urlAtm = "http://localhost/FakeAPI/HistoryMBBank.php?type=$type_atm&token=$atm->token_api";
+                $resultAtm = json_decode(FunResource::requestGet($urlAtm),true);
+                if($resultAtm)
+                {
+                    foreach($resultAtm["transactions"] as $key => $values){
+                        $checkTransAtmExist = TransferService::checkTransExist($atm->bank_name,$values['transactionID']);
+                        if($checkTransAtmExist === 1 || $values['amount'] < $this->rechargeMin || strpos($values['description'],$this->commandBank) === false || $values['type'] !== 'IN'){
+                            continue;
+                        }
+                        $user_id = FunResource::parseComment($this->commandBank,$values["description"]);
+                        $checkUserExist = UserService::getUserById($user_id);
+                        if($checkUserExist){
+                            $transfer = [
+                                'user_id' => $user_id,
+                                'type_transfer' => $atm->bank_name,
+                                'tranding_code' => $values['transactionID'],
+                                'message' => $values['description'],
+                                'amount' =>$values['amount'],
+                            ];
+
+                            $insertTransMomo = TransferService::create($transfer);
+                            if($insertTransMomo){
+                                $transHistory = [
+                                    'action_id'=>$insertTransMomo->id,
+                                    'action_flag' =>4,
+                                    'user_id'=> $user_id,
+                                    'transaction_money'=> "+".$values['amount'],
+                                    'note'=>'Nap tien tu '.$atm->bank_name,
+                                ];
+                                //cộng tiền cho user
                                 FunResource::upMoneyForUser($transHistory);
                             }
                         }

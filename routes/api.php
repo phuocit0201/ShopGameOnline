@@ -49,12 +49,12 @@ use Illuminate\Support\Facades\Route;
         });
         //----------------------------------------END--------------------------------------------------------
 
-        //-----------------------------------ROUTE FACEVALUE------------------------------------------------
+        //-----------------------------------ROUTE MOMO------------------------------------------------
         Route::group([
-            "prefix"=>"facevalue"
+            "prefix"=>"momo"
         ],
         function(){
-            Route::get('/card-by-telco/{id}',[FaceValueController::class,"getByTelco"])->name("getCardByTelco");
+            Route::get('/show',[MomoController::class,"show"])->name("showMomo");
         });
         //----------------------------------------END--------------------------------------------------------
     });
@@ -119,7 +119,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::put('/update',[MomoController::class,"update"])->name("updateMomo");
-            Route::get('/get',[MomoController::class,"get"])->name("showMomo");
+            Route::get('/edit',[MomoController::class,"edit"])->name("editMomo");
         });
         //----------------------------------------END--------------------------------------------------------
 
