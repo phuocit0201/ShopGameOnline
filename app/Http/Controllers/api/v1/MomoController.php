@@ -16,8 +16,7 @@ class MomoController extends Controller
         $validator = Validator::make($request->all(),[
             'phone_number' => 'required|min:10|max:11',
             'full_name' => 'required',
-            'access_token' => 'required',
-            'link_logo' => 'required',
+            'token_api' => 'required',
             'status' => 'min:0|max:1'
         ]);
         if($validator->fails()){
@@ -26,9 +25,9 @@ class MomoController extends Controller
         $data = [
             'phone_number' => $request->phone_number,
             'full_name' => $request->full_name,
-            'access_token' => $request->access_token,
-            'link_logo' => $request->link_logo,
-            'status' => $request->status
+            'token_api' => $request->token_api,
+            'status' => $request->status,
+            'note' => $request->note
         ];
         $update = MomoService::update($data);
         if(!$update){

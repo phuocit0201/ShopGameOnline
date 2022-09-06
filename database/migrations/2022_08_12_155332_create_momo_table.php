@@ -18,14 +18,14 @@ return new class extends Migration
             $table->id();
             $table->char('phone_number',20);
             $table->char('full_name',100);
-            $table->text('access_token');
+            $table->text('token_api');
             $table->text('note')->nullable();
             $table->integer('status')->default(0);
             $table->timestamps();
         });
 
         DB::unprepared('
-            insert into momo(phone_number,full_name,access_token,note,created_at) values
+            insert into momo(phone_number,full_name,token_api,note,created_at) values
             ("so dien thoai","ten","toke api","ghi chu",current_time());
         ');
     }

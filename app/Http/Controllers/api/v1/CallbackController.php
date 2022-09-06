@@ -11,6 +11,7 @@ use App\Http\Services\SettingService;
 use App\Http\Services\TheSieuReService;
 use App\Http\Services\TransferService;
 use App\Http\Services\UserService;
+use Exception;
 use Illuminate\Http\Request;
 
 class CallbackController extends Controller
@@ -60,11 +61,12 @@ class CallbackController extends Controller
     //lấy lịch sử giao dịch momo,atm từ api.web2m.com
     public function getHistoryTrans()
     {
-        $type_transfers = ['MOMO','THESIEURE'];
-        //xử lý lịch sử giao dịch momo
+        try{
+            $type_transfers = ['MOMO','THESIEURE',"ATM"];
+            //xử lý lịch sử giao dịch momo
             $momo = MomoService::get();
             if($momo){
-                $urlMomo = "http://localhost/FakeAPI/HistoryMomo.php?token=$momo->access_token";
+                $urlMomo = "http://localhost/FakeAPI/HistoryMomo.php?token=$momo->token_api";
                 $resultMomo = json_decode(FunResource::requestGet($urlMomo),true);
                 if($resultMomo){
                     foreach($resultMomo['momoMsg']['tranList'] as $key => $values)
@@ -74,7 +76,7 @@ class CallbackController extends Controller
                         if($values['amount'] < $this->rechargeMin || !$values['comment'] || strpos($values['comment'],$this->commandBank) === false || $checkTransMomoExist === 1 || $values['io'] != 1){
                             continue;
                         }
-                       
+                        
                         $user_id = FunResource::parseComment($this->commandBank,$values["comment"]);
                         $checkUserExist = UserService::getUserById($user_id);
                         //nếu user tồn tại thì tiến hành insert vào database và cộng tiền
@@ -103,47 +105,51 @@ class CallbackController extends Controller
                     }
                 }
             }
-        //xử lý lịch sử giao dịch thẻ siêu rẻ
-        if($this->getTSR){
-            $urlTSR = "http://localhost/FakeAPI/HistoryTSR.php?token=".$this->getTSR->access_token;
-            $resultTSR = json_decode(FunResource::requestGet($urlTSR),true);
-            if($resultTSR){
-                foreach ($resultTSR['tranList'] as $key => $values)
-                {
-                    $checkTransTSRExist = TransferService::checkTransExist($type_transfers[1],$values['tranId']);
-                    if((float) $values['amount'] < $this->rechargeMin || $checkTransTSRExist === 1 || strpos($values['description'],$this->commandBank) === false){
-                        continue;
-                    }
-                    $user_id = FunResource::parseComment($this->commandBank,$values["description"]);
-                    $checkUserExist = UserService::getUserById($user_id);
-                    
-                    //nếu user tồn tại thì cộng tiền cho user đó
-                    if($checkUserExist)
+            //xử lý lịch sử giao dịch thẻ siêu rẻ
+            if($this->getTSR){
+                $urlTSR = "http://localhost/FakeAPI/HistoryTSR.php?token=".$this->getTSR->token_api;
+                $resultTSR = json_decode(FunResource::requestGet($urlTSR),true);
+                if($resultTSR){
+                    foreach ($resultTSR['tranList'] as $key => $values)
                     {
-                        $transfer = [
-                            'user_id' => $user_id,
-                            'type_transfer' => $type_transfers[1],
-                            'tranding_code' => $values['tranId'],
-                            'message' => $values['description'],
-                            'amount' =>$values['amount'],
-                        ];
-                        //insert giao dịch vào db trigger sẽ tự động cộng tiền
-                        $insertTransTSR = TransferService::create($transfer);
-                        if($insertTransTSR){
-                            $transHistory = [
-                                'action_id'=>$insertTransTSR->id,
-                                'action_flag' =>4,
-                                'user_id'=> $user_id,
-                                'transaction_money'=> "+".$values['amount'],
-                                'note'=>'Nap tien the sieu re',
+                        $checkTransTSRExist = TransferService::checkTransExist($type_transfers[1],$values['tranId']);
+                        if((float) $values['amount'] < $this->rechargeMin || $checkTransTSRExist === 1 || strpos($values['description'],$this->commandBank) === false){
+                            continue;
+                        }
+                        $user_id = FunResource::parseComment($this->commandBank,$values["description"]);
+                        $checkUserExist = UserService::getUserById($user_id);
+                        
+                        //nếu user tồn tại thì cộng tiền cho user đó
+                        if($checkUserExist)
+                        {
+                            $transfer = [
+                                'user_id' => $user_id,
+                                'type_transfer' => $type_transfers[1],
+                                'tranding_code' => $values['tranId'],
+                                'message' => $values['description'],
+                                'amount' =>$values['amount'],
                             ];
-                            //cộng tiền cho user đồng thời 
-                            FunResource::upMoneyForUser($transHistory);
+                            //insert giao dịch vào db trigger sẽ tự động cộng tiền
+                            $insertTransTSR = TransferService::create($transfer);
+                            if($insertTransTSR){
+                                $transHistory = [
+                                    'action_id'=>$insertTransTSR->id,
+                                    'action_flag' =>4,
+                                    'user_id'=> $user_id,
+                                    'transaction_money'=> "+".$values['amount'],
+                                    'note'=>'Nap tien the sieu re',
+                                ];
+                                //cộng tiền cho user đồng thời 
+                                FunResource::upMoneyForUser($transHistory);
+                            }
                         }
                     }
                 }
             }
+            return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
+        }catch(Exception $e){
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,500);
         }
-        return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
+       
     }
 }

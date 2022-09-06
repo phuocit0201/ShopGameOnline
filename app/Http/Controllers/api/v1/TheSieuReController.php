@@ -19,7 +19,7 @@ class TheSieuReController extends Controller
         $validator = Validator::make($request->all(),[
             'username' => 'required',
             'full_name' => 'required',
-            'access_token' => 'required',
+            'token_api' => 'required',
             'partner_key' => 'required',
             'partner_id' => 'required',
             'status_bank' => 'min:0|max:1',
@@ -31,7 +31,7 @@ class TheSieuReController extends Controller
         $data = [
             'username' => $request->username,
             'full_name' => $request->full_name,
-            'access_token' => $request->access_token,
+            'token_api' => $request->token_api,
             'partner_key' => $request->partner_key,
             'partner_id' => $request->partner_id,
             'status_bank' => $request->status_bank,

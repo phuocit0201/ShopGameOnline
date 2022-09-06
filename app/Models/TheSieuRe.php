@@ -12,7 +12,7 @@ class TheSieuRe extends Model
     protected $fillable = [
         'username',
         'full_name',
-        'access_token' ,
+        'token_api' ,
         'partner_key',
         'partner_id',
         'note',

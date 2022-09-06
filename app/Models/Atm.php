@@ -12,9 +12,8 @@ class Atm extends Model
     protected $fillable = [
         'account_number',
         'full_name',
-        'username',
         'password',
-        'access_token',
+        'token_api',
         'note',
         'status',
         'bank_id'

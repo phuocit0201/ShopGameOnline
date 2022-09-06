@@ -20,7 +20,7 @@ return new class extends Migration
             $table->text('link_logo');
         });
         DB::unprepared('
-            insert into banks(bank_name) values
+            insert into banks(bank_name,link_logo) values
             ("ACB","ACB.png"),
             ("TECHCOMBANK","TECHCOMBANK.png"),
             ("VIETCOMBANK","VIETCOMBANK.png"),

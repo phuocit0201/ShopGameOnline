@@ -12,7 +12,7 @@ class Momo extends Model
     protected $fillable = [
         'phone_number',
         'full_name',
-        'access_token',
+        'token_api',
         'note',
         'status'
     ];

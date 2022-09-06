@@ -18,7 +18,7 @@ return new class extends Migration
             $table->id();
             $table->char('username');
             $table->char('full_name',100);
-            $table->text('access_token');
+            $table->text('token_api');
             $table->text('partner_key');
             $table->text('partner_id');
             $table->integer('status_bank')->default(0);
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->timestamps();
         });
         DB::unprepared('
-            insert into thesieure (username,full_name,access_token,partner_key,partner_id,created_at) values
+            insert into thesieure (username,full_name,token_api,partner_key,partner_id,created_at) values
             ("taikhoan","Le Huu Phuoc","abcd1234","abcd1234","12345",current_time());
         ');
     }
