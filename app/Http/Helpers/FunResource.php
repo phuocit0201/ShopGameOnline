@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Helpers;
 
+use App\Http\Services\SettingService;
 use App\Http\Services\TheSieuReService;
 use App\Http\Services\TransHistoryService;
 use App\Http\Services\UserService;
@@ -99,6 +100,10 @@ class FunResource{
                 return $values;
             }
         }
+    }
+
+    public static function site($keyName){
+        return SettingService::getValueSettings($keyName)->value;
     }
 }
 ?>

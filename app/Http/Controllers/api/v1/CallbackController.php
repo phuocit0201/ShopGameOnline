@@ -7,6 +7,7 @@ use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
 use App\Http\Services\CardService;
 use App\Http\Services\MomoService;
+use App\Http\Services\SettingService;
 use App\Http\Services\TheSieuReService;
 use App\Http\Services\TransferService;
 use App\Http\Services\UserService;
@@ -14,8 +15,16 @@ use Illuminate\Http\Request;
 
 class CallbackController extends Controller
 {
-    private $partner_key = "4c5daff8a6f7e0ccf572421246915640";
+    private $getTSR;
+    private $rechargeMin;
+    private $commandBank;
     //nhận dữ liệu callback từ thẻ siêu rẻ
+    public function __construct()
+    {
+       $this->getTSR = TheSieuReService::getTSR();
+       $this->rechargeMin = FunResource::site('recharge_min');
+       $this->commandBank = FunResource::site('command_bank');
+    }
     public function callbackTsr(Request $request)
     {
         $card = CardService::getCardByRequestId($request->code,$request->serial,$request->telco);
@@ -23,7 +32,7 @@ class CallbackController extends Controller
         if(!$card || $card->status != 99){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,400);
         }
-        $sign = md5($this->partner_key.$card->code.$card->serial);
+        $sign = md5($this->getTSR->partner_key.$card->code.$card->serial);
 
         if($sign === $request->callback_sign)
         {
@@ -55,18 +64,18 @@ class CallbackController extends Controller
         //xử lý lịch sử giao dịch momo
             $momo = MomoService::get();
             if($momo){
-                $urlMomo = "http://localhost/test/FakeAPI/HistoryMomo.php?token=$momo->access_token";
+                $urlMomo = "http://localhost/FakeAPI/HistoryMomo.php?token=$momo->access_token";
                 $resultMomo = json_decode(FunResource::requestGet($urlMomo),true);
                 if($resultMomo){
                     foreach($resultMomo['momoMsg']['tranList'] as $key => $values)
                     {
                         $checkTransMomoExist = TransferService::checkTransExist($type_transfers[0],$values['tranId']);
 
-                        if(!$values['comment'] || strpos($values['comment'],'NAPTIEN') === false || $checkTransMomoExist === 1 || $values['io'] != 1){
+                        if($values['amount'] < $this->rechargeMin || !$values['comment'] || strpos($values['comment'],$this->commandBank) === false || $checkTransMomoExist === 1 || $values['io'] != 1){
                             continue;
                         }
                        
-                        $user_id = FunResource::parseComment('NAPTIEN',$values["comment"]);
+                        $user_id = FunResource::parseComment($this->commandBank,$values["comment"]);
                         $checkUserExist = UserService::getUserById($user_id);
                         //nếu user tồn tại thì tiến hành insert vào database và cộng tiền
                         if($checkUserExist){
@@ -95,18 +104,17 @@ class CallbackController extends Controller
                 }
             }
         //xử lý lịch sử giao dịch thẻ siêu rẻ
-        $thesieure = TheSieuReService::getTSR();
-        if($thesieure){
-            $urlTSR = "http://localhost/test/FakeAPI/HistoryTSR.php?token=$thesieure->access_token";
+        if($this->getTSR){
+            $urlTSR = "http://localhost/FakeAPI/HistoryTSR.php?token=".$this->getTSR->access_token;
             $resultTSR = json_decode(FunResource::requestGet($urlTSR),true);
             if($resultTSR){
                 foreach ($resultTSR['tranList'] as $key => $values)
                 {
                     $checkTransTSRExist = TransferService::checkTransExist($type_transfers[1],$values['tranId']);
-                    if($checkTransTSRExist === 1 || $values['amount'][0] === '-' || strpos($values['description'],'NAPTIEN') === false){
+                    if((float) $values['amount'] < $this->rechargeMin || $checkTransTSRExist === 1 || strpos($values['description'],$this->commandBank) === false){
                         continue;
                     }
-                    $user_id = FunResource::parseComment('NAPTIEN',$values["description"]);
+                    $user_id = FunResource::parseComment($this->commandBank,$values["description"]);
                     $checkUserExist = UserService::getUserById($user_id);
                     
                     //nếu user tồn tại thì cộng tiền cho user đó

@@ -17,10 +17,15 @@ return new class extends Migration
         Schema::create('banks', function (Blueprint $table) {
             $table->id();
             $table->char('bank_name',50);
+            $table->text('link_logo');
         });
         DB::unprepared('
             insert into banks(bank_name) values
-            ("ACB"),("TECHCOMBANK"),("VIETCOMBANK"),("TPBANK"),("MBBANK");
+            ("ACB","ACB.png"),
+            ("TECHCOMBANK","TECHCOMBANK.png"),
+            ("VIETCOMBANK","VIETCOMBANK.png"),
+            ("TPBANK","TPBANK.png"),
+            ("MBBANK","MBBANK.png");
         ');
     }
 

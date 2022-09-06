@@ -20,14 +20,13 @@ return new class extends Migration
             $table->char('full_name',100);
             $table->text('access_token');
             $table->text('note')->nullable();
-            $table->text('link_logo');
             $table->integer('status')->default(0);
             $table->timestamps();
         });
 
         DB::unprepared('
-            insert into momo(phone_number,full_name,access_token,note,link_logo,created_at) values
-            ("so dien thoai","ten","toke api","ghi chu","link logo",current_time());
+            insert into momo(phone_number,full_name,access_token,note,created_at) values
+            ("so dien thoai","ten","toke api","ghi chu",current_time());
         ');
     }
 

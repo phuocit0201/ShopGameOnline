@@ -27,7 +27,7 @@ class Mess{
     public static $CARD_EXIST ="This card already exists on the system";
     public static $INVALID_CARD_PRICE = "Invalid card price";
     public static $NOT_FOUND = "This information could not be found";
-    public static $SYSTEM_MAINTENANCE = "Card loading system under maintenance";
+    public static $SYSTEM_MAINTENANCE_CARD = "Card loading system under maintenance";
 }
 
 ?>

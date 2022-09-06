@@ -21,7 +21,8 @@ return new class extends Migration
             $table->text('access_token');
             $table->text('partner_key');
             $table->text('partner_id');
-            $table->integer('status')->default(0);
+            $table->integer('status_bank')->default(0);
+            $table->integer('status_card')->default(0);
             $table->timestamps();
         });
         DB::unprepared('

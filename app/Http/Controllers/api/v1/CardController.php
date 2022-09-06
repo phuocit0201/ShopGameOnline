@@ -14,14 +14,16 @@ class CardController extends Controller
 {
     private $user;
     private $user_id;
-    private $partner_id;
-    private $partner_key;
+    // private $partner_id;
+    // private $partner_key;
+    private $getTSR;
     private $url = "https://thesieure.com/chargingws/v2";
     public function __construct()
     {
-        $getTSR = TheSieuReService::getTSR();
-        $this->partner_id = $getTSR->partner_id;
-        $this->partner_key = $getTSR->partner_key;
+        $this->getTSR = TheSieuReService::getTSR();
+        // $this->partner_id = $getTSR->partner_id;
+        // $this->partner_key = $getTSR->partner_key;
+
     }
 
     public function getHistoryByUser()
@@ -32,30 +34,30 @@ class CardController extends Controller
 
     public function requestCardTsr(Request $request)
     {
-        $this->user = response()->json(Auth::guard()->user());
-        $this->user_id = $this->user->getData()->id;
-        //kiểm tra xem hệ thống nạp thẻ có bảo trì không
-        $theSieuRe = TheSieuReService::getTSR();
-        if($theSieuRe->status !== 0)
-        {
-            return FunResource::responseNoData(false,Mess::$SYSTEM_MAINTENANCE,401);
+        //kiểm tra xem hệ thống nạp thẻ có hoạt động hay không
+        if($this->getTSR->status_card === 1){
+            return FunResource::responseNoData(false,Mess::$SYSTEM_MAINTENANCE_CARD,401);
         }
         //lấy ra thông tin mệnh giá và nhà mạng mà người dùng gửi
         $face_value = FunResource::checkCard($request->telco,$request->declare_value);
         if(!$face_value){
             return FunResource::responseNoData(false,Mess::$CARD_NOT_EXIST,401);
         }
+        //lấy thông tin người dùng
+        $this->user = response()->json(Auth::guard()->user());
+        $this->user_id = $this->user->getData()->id;
+        
         //gởi thẻ lên server nếu bị trùng request_id thì thực hiện gởi lại
         do{
             $request_id = rand(11111111,99999999) + rand(22222222,88888888);
-            $sign = md5($this->partner_key.$request->code.$request->serial);
+            $sign = md5($this->getTSR->partner_key.$request->code.$request->serial);
             $card = [
                 'telco' => $face_value['telco'],
                 'serial' => $request->serial,
                 'code' => $request->code,
                 'amount' => $face_value['value'],
                 'request_id' => $request_id,
-                'partner_id' => $this->partner_id,
+                'partner_id' => $this->getTSR->partner_id,
                 'sign' => $sign,
                 'command'=>'charging'
             ];

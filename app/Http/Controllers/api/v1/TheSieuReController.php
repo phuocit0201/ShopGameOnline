@@ -22,7 +22,8 @@ class TheSieuReController extends Controller
             'access_token' => 'required',
             'partner_key' => 'required',
             'partner_id' => 'required',
-            'status' => 'min:0|max:1',
+            'status_bank' => 'min:0|max:1',
+            'status_card' => 'min:0|max:1',
         ]);
         if($validator->fails()){
             return FunResource::responseNoData(false,Mess::$INVALID_INFO,401);
@@ -33,7 +34,8 @@ class TheSieuReController extends Controller
             'access_token' => $request->access_token,
             'partner_key' => $request->partner_key,
             'partner_id' => $request->partner_id,
-            'status' => $request->status
+            'status_bank' => $request->status_bank,
+            'status_card' => $request->status_card
         ];
         $update = TheSieuReService::update($id,$data);
         if(!$update){

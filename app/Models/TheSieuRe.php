@@ -16,6 +16,7 @@ class TheSieuRe extends Model
         'partner_key',
         'partner_id',
         'note',
-        'status'   
+        'status_bank',   
+        'status_card'   
     ];
 }
