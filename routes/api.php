@@ -10,6 +10,7 @@ use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
 use App\Http\Controllers\api\v1\TheSieuReController;
+use App\Http\Controllers\api\v1\TransHistoryController;
 use Illuminate\Support\Facades\Route;
 
 //-------------------------------------------AUTHENTICATION------------------------------------------
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Route;
             "prefix"=>"users"
         ],
         function(){
-            Route::get('/get-me',[UserController::class,"getMe"])->name("getMe");
+            Route::post('/get-me',[UserController::class,"getMe"])->name("getMe");
             Route::post('/logout',[UserController::class,"logout"])->name("logout");
             Route::put('/change-password',[UserController::class,"changePassword"])->name("changePassword");
         });
@@ -55,6 +56,15 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/show',[MomoController::class,"show"])->name("showMomo");
+        });
+        //----------------------------------------END--------------------------------------------------------
+        
+        //-----------------------------------TRANSACTION HISTORY------------------------------------------------
+        Route::group([
+            "prefix"=>"trans-history"
+        ],
+        function(){
+            Route::get('/get-by-user',[TransHistoryController::class,"getByUser"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });

@@ -13,5 +13,19 @@ class TransHistoryService{
             return null;
         }
     }
+    public static function get($perPage){
+        try{
+            return DB::table('transaction_history')->paginate($perPage);
+        }catch(Exception $e){
+            return null;
+        }
+    }
+    public static function getByUser($id,$perPage){
+        try{
+            return DB::table('transaction_history')->where('user_id',$id)->paginate($perPage);
+        }catch(Exception $e){
+            return null;
+        }
+    }
 }
 ?>

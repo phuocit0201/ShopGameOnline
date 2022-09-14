@@ -8,15 +8,15 @@ use Illuminate\Support\Facades\DB;
 class TransferService{
     public static function create($transfer)
     {
-        try{
+        // try{
             $insertTrans = Transfer::create($transfer);
             if(!$insertTrans){
                 return null;
             }
             return $insertTrans;
-        }catch(Exception $e){
-            return null;
-        }
+        // }catch(Exception $e){
+        //     return null;
+        // }
        
     }
 

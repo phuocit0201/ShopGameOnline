@@ -61,12 +61,12 @@ class CallbackController extends Controller
     //lấy lịch sử giao dịch momo,atm từ api.web2m.com
     public function getHistoryTrans()
     {
-        try{
+        // try{
             $type_transfers = ['MOMO','THESIEURE'];
             //xử lý lịch sử giao dịch momo
             $momo = MomoService::get();
             if($momo && $momo->status == 0){
-                $urlMomo = "http://localhost/FakeAPI/HistoryMomo.php?token=$momo->token_api";
+                $urlMomo = "http://localhost/test/FakeAPI/HistoryMomo.php?token=$momo->token_api";
                 $resultMomo = json_decode(FunResource::requestGet($urlMomo),true);
                 if($resultMomo){
                     foreach($resultMomo['momoMsg']['tranList'] as $key => $values)
@@ -106,8 +106,8 @@ class CallbackController extends Controller
                 }
             }
             //xử lý lịch sử giao dịch thẻ siêu rẻ
-            if($this->getTSR->status_bank && $this->getTSR->status_bank == 0){
-                $urlTSR = "http://localhost/FakeAPI/HistoryTSR.php?token=".$this->getTSR->token_api;
+            if($this->getTSR->full_name && $this->getTSR->status_bank == 0){
+                $urlTSR = "http://localhost/test/FakeAPI/HistoryTSR.php?token=".$this->getTSR->token_api;
                 $resultTSR = json_decode(FunResource::requestGet($urlTSR),true);
                 if($resultTSR){
                     foreach ($resultTSR['tranList'] as $key => $values)
@@ -150,8 +150,8 @@ class CallbackController extends Controller
             //xử lý giao dịch atm
             $atm = AtmService::getAtm();
             if($atm && $atm->status == 0){
-                $type_atm = FunResource::urlApiAtm($atm->bank_name);
-                $urlAtm = "http://localhost/FakeAPI/HistoryMBBank.php?type=$type_atm&token=$atm->token_api";
+                //$type_atm = FunResource::urlApiAtm($atm->bank_name);
+                $urlAtm = "http://localhost/test/FakeAPI/HistoryVCB.php?token=$atm->token_api";
                 $resultAtm = json_decode(FunResource::requestGet($urlAtm),true);
                 if($resultAtm)
                 {
@@ -188,9 +188,9 @@ class CallbackController extends Controller
                 }
             }
             return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
-        }catch(Exception $e){
-            return FunResource::responseNoData(false,Mess::$EXCEPTION,500);
-        }
+        // }catch(Exception $e){
+        //     return FunResource::responseNoData(false,Mess::$EXCEPTION,500);
+        // }
        
     }
 }
