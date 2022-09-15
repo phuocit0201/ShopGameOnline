@@ -22,7 +22,9 @@ class TransHistoryService{
     }
     public static function getByUser($id,$perPage){
         try{
-            return DB::table('transaction_history')->where('user_id',$id)->paginate($perPage);
+            return DB::table('transaction_history')->where('user_id',$id)
+            ->orderByDesc('id')
+            ->paginate($perPage);
         }catch(Exception $e){
             return null;
         }
