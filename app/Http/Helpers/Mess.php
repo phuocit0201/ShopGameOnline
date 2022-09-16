@@ -28,6 +28,15 @@ class Mess{
     public static $INVALID_CARD_PRICE = "Invalid card price";
     public static $NOT_FOUND = "This information could not be found";
     public static $SYSTEM_MAINTENANCE_CARD = "Card loading system under maintenance";
+    public static function messageValidation(){
+        return [
+            'email.unique' => 'Email này đã tồn tại trên hệ thống',
+            'email.email' => 'Email không đúng định dạng',
+            'email.required' => 'Email không được bỏ trống',
+            'email.max:100' => 'Email tối đa 100 kí tự',
+            'username.unique' => 'Tài khoản này đã tồn tại trên hệ thống'
+        ];
+    }
 }
 
 ?>
