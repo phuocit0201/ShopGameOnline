@@ -15,7 +15,9 @@ class TransHistoryService{
     }
     public static function get($perPage){
         try{
-            return DB::table('transaction_history')->paginate($perPage);
+            return DB::table('transaction_history')
+            ->orderByDesc('id')
+            ->paginate($perPage);
         }catch(Exception $e){
             return null;
         }

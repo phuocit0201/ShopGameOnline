@@ -92,7 +92,7 @@ class FunResource{
 
     //kiểm tra xem thẻ cào này tồn tại không
     public static function checkCard($telco,$value){
-        $url = "https://thesieure.com//chargingws/v2/getfee?partner_id=";
+        $url = "https://thesieure.com/chargingws/v2/getfee?partner_id=";
         $partner_id = TheSieuReService::getTSR()->partner_id;
         $listCard = json_decode(FunResource::requestGet($url.$partner_id),true);
         foreach($listCard as $key => $values){
@@ -100,6 +100,13 @@ class FunResource{
                 return $values;
             }
         }
+    }
+
+    public static function getFee(){
+        $partner_id = TheSieuReService::getTSR()->partner_id;
+        $url = "https://thesieure.com/chargingws/v2/getfee?partner_id=$partner_id";
+        $listCard = json_decode(FunResource::requestGet($url),true);
+        return $listCard;
     }
 
     public static function site($keyName){

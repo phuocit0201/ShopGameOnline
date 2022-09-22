@@ -11,12 +11,12 @@ class SecurityController extends Controller
 {
     public function unauthorized()
     {
-        return FunResource::responseNoData(false,Mess::$UNAUTHORIZED,401);
+        return FunResource::responseNoData(false,Mess::$UNAUTHORIZED,403);
     }
 
     public function tokenNotExist()
     {
-        return FunResource::responseNoData(false,Mess::$TOKEN_FAILED,401);
+        return FunResource::responseNoData(false,Mess::$TOKEN_FAILED,403);
     }
 
     public function securityRequest()

@@ -26,9 +26,11 @@ class CardController extends Controller
 
     }
 
-    public function getHistoryByUser()
+    public function getHistoryByUser(Request $request)
     {
-        $history = CardService::getHistoryByUser($this->user_id);
+        $this->user = response()->json(Auth::guard()->user());
+        $this->user_id = $this->user->getData()->id;
+        $history = CardService::getHistoryByUser($this->user_id,$request->per_page);
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$history,200);
     }
 
@@ -83,6 +85,13 @@ class CardController extends Controller
             CardService::create($insertCard);
             return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
         }
-        return FunResource::responseNoData(false,$result["message"],400);
+        return FunResource::responseNoData(false,$result["message"],401);
+    }
+    
+    public function getFee()
+    {
+        $listCard = FunResource::getFee();
+        return $listCard;
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$listCard,200);
     }
 }

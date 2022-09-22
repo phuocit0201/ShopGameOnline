@@ -39,7 +39,8 @@ class CallbackController extends Controller
         {
             $data = [
                 'value' => $request->value,
-                'status' => $request->status
+                'status' => $request->status,
+                'amount' => $request->amount
             ];
             CardService::update($request->telco,$request->serial,$request->code,$data);
             if($request->status === 1){

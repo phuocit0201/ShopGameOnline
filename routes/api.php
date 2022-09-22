@@ -46,6 +46,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/history',[CardController::class,"getHistoryByUser"])->name("getHistoryCardByUser");
+            Route::get('/get-fee',[CardController::class,"getFee"]);
             Route::post('/request-card-tsr',[CardController::class,"requestCardTsr"])->name("requestCardTsr");
         });
         //----------------------------------------END--------------------------------------------------------

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\api\v1;
 
+use App\Http\Requests\UsersRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -12,7 +13,6 @@ use App\Http\Services\TransHistoryService;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -36,6 +36,7 @@ class UserController extends Controller
             'email' => $request->email,
             'username' => $request->username,
             'password' => $request->password,
+            'confirmPassword' => $request->confirmPassword,
             'name' => $request->name
         ];
 
@@ -44,13 +45,17 @@ class UserController extends Controller
                 'username' => 'required|unique:users|min:6|max:50|alpha_num',
                 'password' => 'required|min:6|max:50|alpha_num',
                 'name'=> 'required|max:50',
+                'confirmPassword' => 'required|min:6|max:50|alpha_num'
         ]);
-
+        $errors = $validator->errors()->toArray();
+        if($request->password !== $request->confirmPassword){
+            $errors['confirmPassword'] = ['Xác nhận mật khẩu không đúng'];
+        }
         //kiểm tra có lỗi ở những trường hợp trên hay không
-        if ($validator->fails()){
+        if ($errors){
             return response()->json([
                 'status' => false,
-                'errors' => $validator->errors()->toArray()
+                'errors' => $errors
             ]);
         }
         //lấy ip người dùng
@@ -91,21 +96,22 @@ class UserController extends Controller
             'password_new' => 'required|min:6|max:50|alpha_num',
             'password_confirm' => 'required|min:6|max:50|alpha_num',
         ]);
-        if($validator->fails()){
-            return FunResource::responseData(false,Mess::$INVALID_INFO,$validator->errors()->toArray(),401);
+        $errors = $validator->errors()->toArray();
+         //bắt lỗi nếu xác nhận mật khẩu không khớp
+        if($user['password_new'] !== $user['password_confirm']){
+            $errors['password_confirm'] = ['Xác nhận mật khẩu không khớp'];
         }
-
         //kiểm tra xem người dùng nhập mật khẩu cũ chính xác không
         if(!Hash::check($user["password_old"],$me["password"]))
         {
-            return FunResource::responseNoData(false,Mess::$PASSWORD_OLD_INCORRECT,401);
+            $errors['password_old'] = ['Mật khẩu cũ không đúng'];
         }
-
-        //bắt lỗi nếu xác nhận mật khẩu không khớp
-        if($user['password_new'] !== $user['password_confirm']){
-            return FunResource::responseNoData(false,Mess::$CONFIRM_PASSWORD_INCORRECT,401);
+        if($errors){
+            return response()->json([
+                'status' => false,
+                'errors' => $errors
+            ]);
         }
-
         //thực hiện thay đổi mật khẩu đồng thời xóa jwt cũ cấp lại jwt mới cho người dùng
         try{
             $me->update(['password'=>Hash::make($user["password_new"])]);
