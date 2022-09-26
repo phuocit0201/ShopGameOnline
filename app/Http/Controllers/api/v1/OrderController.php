@@ -60,4 +60,18 @@ class OrderController extends Controller
         }
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$orderDetail,200);
     }
+
+    public function getOrderByUser(Request $request)
+    {
+        $user = response()->json(Auth::guard()->user());
+        $listOrder = OrderService::getOrderByUser($user->getData()->id,$request->per_page);
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$listOrder,200);
+    }
+
+    public function getOrderDetailByUser(Request $request)
+    {
+        $user = response()->json(Auth::guard()->user());
+        $listOrderDetail = OrderService::getOrderDetailByUser($user->getData()->id);
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$listOrderDetail,200);
+    }
 }

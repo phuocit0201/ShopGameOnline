@@ -10,7 +10,7 @@ class AtmService{
         try{
             return DB::table('atm')
             ->join('banks','atm.bank_id','banks.id')
-            ->select('atm.*','banks.bank_name')
+            ->select('atm.*','banks.bank_name','banks.link_logo')
             ->first();
         }catch(Exception $e){
             return null;

@@ -21,12 +21,13 @@ return new class extends Migration
             $table->text('token_api');
             $table->text('note')->nullable();
             $table->integer('status')->default(0);
+            $table->text('link_logo');
             $table->timestamps();
         });
 
         DB::unprepared('
-            insert into momo(phone_number,full_name,token_api,note,created_at) values
-            ("so dien thoai","ten","toke api","ghi chu",current_time());
+            insert into momo(phone_number,full_name,token_api,note,link_logo,created_at) values
+            ("0845151117","LE HUU PHUOC","tokeapi","Vui lòng điền nhập đúng nội dung","logo.png",current_time());
         ');
     }
 

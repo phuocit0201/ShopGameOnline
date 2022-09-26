@@ -90,8 +90,11 @@ class CardController extends Controller
     
     public function getFee()
     {
+        //kiểm tra xem hệ thống nạp thẻ có hoạt động hay không
+        if($this->getTSR->status_card === 1){
+            return FunResource::responseNoData(false,Mess::$SYSTEM_MAINTENANCE_CARD,401);
+        }
         $listCard = FunResource::getFee();
-        return $listCard;
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$listCard,200);
     }
 }

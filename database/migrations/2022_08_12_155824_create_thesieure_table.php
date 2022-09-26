@@ -23,11 +23,13 @@ return new class extends Migration
             $table->text('partner_id');
             $table->integer('status_bank')->default(0);
             $table->integer('status_card')->default(0);
+            $table->text('note');
+            $table->text('link_logo');
             $table->timestamps();
         });
         DB::unprepared('
-            insert into thesieure (username,full_name,token_api,partner_key,partner_id,created_at) values
-            ("taikhoan","Le Huu Phuoc","abcd1234","abcd1234","12345",current_time());
+            insert into thesieure (username,full_name,token_api,partner_key,partner_id,note,link_logo,created_at) values
+            ("phuocit0201","Le Huu Phuoc","abcd1234","abcd1234","12345","Vui lòng điền đúng nội dung","logo.png",current_time());
         ');
     }
 

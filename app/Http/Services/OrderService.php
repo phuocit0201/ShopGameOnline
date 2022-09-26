@@ -25,5 +25,25 @@ class OrderService{
         ->select('account_game.*')
         ->first();
     }
-}
+
+    public static function getOrderDetailByUser($user_id)
+    {
+        return DB::table('account_game')
+        ->join('orders','account_game.id','=','orders.account_id')
+        ->where('orders.user_id',$user_id)
+        ->select('account_game.id','account_game.username','account_game.password','account_game.sale_price')
+        ->get();
+    }
+
+    public static function getOrderByUser($userId,$perPage){
+        return DB::table('account_game')
+        ->join('orders','account_game.id','=','orders.account_id')
+        ->join('categories','categories.id','=','account_game.category_id')
+        ->where('orders.user_id',$userId)
+        ->select('orders.*','categories.name')
+        ->orderByDesc('orders.id')
+        ->paginate($perPage);
+    }
+}   
+
 ?>

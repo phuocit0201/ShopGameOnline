@@ -125,6 +125,5 @@ class FunResource{
                 return 'historyapimbv3';
         }
     }
-
 }
 ?>

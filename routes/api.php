@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\api\v1\AccountController;
+use App\Http\Controllers\api\v1\AtmWalletController;
 use App\Http\Controllers\api\v1\CallbackController;
 use App\Http\Controllers\api\v1\CardController;
 use App\Http\Controllers\api\v1\CategoryController;
@@ -37,6 +38,8 @@ use Illuminate\Support\Facades\Route;
         function(){
             Route::post('/create',[OrderController::class,"store"])->name("createOrder");
             Route::get('/order-detail/{id}',[OrderController::class,"orderDetail"])->name("orderDetail");
+            Route::get('/get-orders-by-user',[OrderController::class,"getOrderByUser"]);
+            Route::get('/get-orders-detail-by-user',[OrderController::class,"getOrderDetailByUser"]);
         });
         //----------------------------------------END--------------------------------------------------------
 
@@ -66,6 +69,15 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/get-by-user',[TransHistoryController::class,"getByUser"]);
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+         //-----------------------------------ATM WALLET------------------------------------------------
+         Route::group([
+            "prefix"=>"atm-wallet"
+        ],
+        function(){
+            Route::get('/get',[AtmWalletController::class,"index"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });
