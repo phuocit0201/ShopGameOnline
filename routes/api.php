@@ -10,6 +10,7 @@ use App\Http\Controllers\api\v1\MomoController;
 use App\Http\Controllers\api\v1\OrderController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
+use App\Http\Controllers\api\v1\SettingController;
 use App\Http\Controllers\api\v1\TheSieuReController;
 use App\Http\Controllers\api\v1\TransHistoryController;
 use Illuminate\Support\Facades\Route;
@@ -187,6 +188,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/index',[AccountController::class,"index"])->name("indexAcounts");
+            Route::get('/get-accounts-client',[AccountController::class,"showAccountByCategoryClient"]);
             Route::get('/account-by-category/{id}',[AccountController::class,"showAccountByCategory"])->name("showAccountByCategory");
             Route::get('/show/{id}',[AccountController::class,"show"])->name("showAccount");
         });
@@ -199,6 +201,15 @@ use Illuminate\Support\Facades\Route;
             Route::post('/callbacktsr',[CallbackController::class,"callbackTsr"])->name("callbackTsr");
             Route::get('/get-history-transfers',[CallbackController::class,"getHistoryTrans"])->name("getHistoryTrans")->middleware('request_trans');
 
+        });
+        //------------------------------------------END--------------------------------------------------------
+
+         //---------------------------------------SETTINGS----------------------------------------------------
+         Route::group([
+            "prefix"=>"settings"
+        ],
+        function(){
+            Route::get('/get-settings',[SettingController::class,"index"]);
         });
         //------------------------------------------END--------------------------------------------------------
     });

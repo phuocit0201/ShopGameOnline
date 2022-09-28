@@ -5,9 +5,6 @@ use Exception;
 use Illuminate\Support\Facades\DB;
 
 class CategoryService{
-    private $delete = 2;
-
-
     public static function create($category)
     {
         try{
@@ -51,6 +48,15 @@ class CategoryService{
             return false;
         }catch(Exception $e){
             return false;
+        }
+    }
+
+    public static function getIdCategoryBySlug($slug){
+        try{
+            $category = DB::table('categories')->where('slug',$slug)->first();
+            return $category;
+        }catch(Exception $e){
+            return null;
         }
     }
 

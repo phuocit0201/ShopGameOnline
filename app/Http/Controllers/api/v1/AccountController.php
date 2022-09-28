@@ -164,23 +164,11 @@ class AccountController extends Controller
     }
 
     //get danh sách tài khoản game này giành cho client vì chi lấy những tài khoản có trạng thái hiện
-    public function showAccountByCategory(Request $request,$id)
+    public function showAccountByCategoryClient(Request $request)
     {
-        //nếu là admin thì show những account có trạng thái đã bán và bị ẩn
-        if(FunResource::checkIsAdmin()){
-            $account = AccountService::getAccountByCategoryAdmin($id,$request->per_page);
-            if(!$account){
-                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
-            }
-        }
-        //nếu không phải thì chỉ show những account có trạng thái hiển thị
-        else{
-            $account = AccountService::getAccountByCategoryClient($id,$request->per_page);
-            if(!$account){
-                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
-            }
-        }
-        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
-        
+        $category = CategoryService::getIdCategoryBySlug($request->slug);
+        $categoryId = $category->id;
+        $accounts = AccountService::getAccountByCategoryClient($categoryId,$request->per_page);
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$accounts,200);
     }
 }
