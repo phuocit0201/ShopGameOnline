@@ -8,6 +8,7 @@ use App\Http\Helpers\Mess;
 use App\Http\Services\AccountService;
 use App\Http\Services\CategoryService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
 
 class AccountController extends Controller
@@ -42,9 +43,10 @@ class AccountController extends Controller
     {
         //bắt lỗi thông tin người dùng gửi lên
         $validator = Validator::make($request->all(),[
-            'info1' => 'required|max:50',
-            'info2' => 'required|max:50',
-            'info3' => 'required|max:50',
+            'class' => 'required|max:50',
+            'server_game' => 'required|max:50',
+            'level' => 'required|max:50',
+            'family' => 'required|numeric|min:0|max:1|',
             'import_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'category_id' => 'required|numeric',
@@ -125,9 +127,10 @@ class AccountController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(),[
-            'info1' => 'required|max:50',
-            'info2' => 'required|max:50',
-            'info3' => 'required|max:50',
+            'class' => 'required|max:50',
+            'server_game' => 'required|max:50',
+            'level' => 'required|max:50',
+            'family' => 'required|numeric|min:0|max:1|',
             'import_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'category_id' => 'required|numeric',
@@ -166,9 +169,46 @@ class AccountController extends Controller
     //get danh sách tài khoản game này giành cho client vì chi lấy những tài khoản có trạng thái hiện
     public function showAccountByCategoryClient(Request $request)
     {
+        $search = [];
+        if($request->class){
+            $search['class'] = $request->class;
+        }
+
+        if($request->server_game){
+            $search['server_game'] = $request->server_game;
+        }
+
+        if($request->family){
+            $search['family'] = $request->family;
+        }
+
+        if($request->sale_price){
+            switch($request->sale_price){
+                case '1':
+                    $search['sale_price'] = ['max'=>50000];
+                    break;
+                case '2':
+                    $search['sale_price'] = ['min'=>50000,'max'=>200000];
+                    break;
+                case '3':
+                    $search['sale_price'] = ['min'=>200000, 'max'=>500000];
+                    break;
+                case '4':
+                    $search['sale_price'] = ['min'=>500000,'max'=>1000000];
+                    break;
+                case '5':
+                    $search['sale_price'] = ['min'=>1000000];
+                    break;
+            }
+        }
+
         $category = CategoryService::getIdCategoryBySlug($request->slug);
         $categoryId = $category->id;
-        $accounts = AccountService::getAccountByCategoryClient($categoryId,$request->per_page);
+        $accounts = AccountService::search($search,$request->per_page,$categoryId);
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$accounts,200);
+    }
+
+    public function CryptData(Request $request){
+       
     }
 }

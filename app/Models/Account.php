@@ -10,9 +10,10 @@ class Account extends Model
     use HasFactory;
     protected $table = 'account_game';
     protected $fillable = [
-        'info1',
-        'info2',
-        'info3',
+        'class',
+        'level',
+        'server_game',
+        'family',
         'import_price',
         'sale_price',
         'description',

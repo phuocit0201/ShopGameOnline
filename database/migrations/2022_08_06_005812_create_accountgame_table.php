@@ -15,9 +15,10 @@ return new class extends Migration
     {
         Schema::create('account_game',function(Blueprint $table){
             $table->id();
-            $table->char('info1',50);
-            $table->char('info2',50);
-            $table->char('info3',50);
+            $table->char('class',50);
+            $table->char('level',50);
+            $table->char('server_game',50);
+            $table->integer('family');
             $table->double('import_price');
             $table->double('sale_price');
             $table->text('description');

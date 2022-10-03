@@ -84,6 +84,35 @@ class AccountService{
             return false;
         }
     }
+
+    //search account
+    public static function search($search,$perPage,$id)
+    {
+        $query = Account::query();
+        $query->join('categories','account_game.category_id','=','categories.id');
+        $query->select('account_game.*');
+        try{
+            foreach($search as $key => $value){
+                if($key == 'sale_price'){
+                    if(isset($value['min'])){
+                        $query->where($key,'>=',$value['min']);
+                    }
+
+                    if(isset($value['max'])){
+                        $query->where($key,'<=',$value['max']);
+                    }
+                }else{
+                    $query->where($key,$value);
+                }
+            }
+            $query->where('account_game.status',0);
+            $query->where('account_game.category_id',$id);
+            $query->where('categories.status',0);
+            return $query->paginate($perPage);
+        }catch(Exception $e){
+            return null;
+        }
+    }
 }
 
 ?>
