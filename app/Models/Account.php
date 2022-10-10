@@ -17,6 +17,7 @@ class Account extends Model
         'import_price',
         'sale_price',
         'description',
+        'avatar',
         'status',
         'category_id',
         'username',

@@ -10,6 +10,7 @@ use App\Http\Services\CategoryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
+use Pusher\Pusher;
 
 class AccountController extends Controller
 {
@@ -50,6 +51,7 @@ class AccountController extends Controller
             'import_price' => 'required|numeric',
             'sale_price' => 'required|numeric',
             'category_id' => 'required|numeric',
+            'avatar' => 'required',
             'description' => 'required',
             'username' => 'required|max:50',
             'password' => 'required|max:50'
@@ -84,25 +86,12 @@ class AccountController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function showAccountClient($id)
     {
-        //nếu là admin thì show những account có trạng thái đã bán và bị ẩn
-        if(FunResource::checkIsAdmin()){
-            $account = AccountService::getAccountByIdAdmin($id);
-            if(!$account){
-                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
-            }
+        $account = AccountService::getAccountByIdClient($id);
+        if(!$account){
+            return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
         }
-        //nếu không phải admin thì chỉ show những account có trạng thái hiển thị
-        else{
-            $account = AccountService::getAccountByIdClient($id);
-            if($account){
-                unset($account->username,$account->password);
-            }else{
-                return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
-            }
-        }
-        
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
     }
 
@@ -135,6 +124,7 @@ class AccountController extends Controller
             'sale_price' => 'required|numeric',
             'category_id' => 'required|numeric',
             'description' => 'required',
+            'avatar' => 'required',
             'status' => 'required|numeric|min:0|max:1|'
         ]);
         

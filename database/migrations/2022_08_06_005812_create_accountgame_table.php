@@ -22,6 +22,7 @@ return new class extends Migration
             $table->double('import_price');
             $table->double('sale_price');
             $table->text('description');
+            $table->text('avatar');
             $table->integer('status')->default(0);
             $table->bigInteger('category_id')->unsigned();
             $table->char('username',100);

@@ -13,18 +13,25 @@ use App\Http\Services\TransferService;
 use App\Http\Services\UserService;
 use Exception;
 use Illuminate\Http\Request;
+use Pusher\Pusher;
 
 class CallbackController extends Controller
 {
     private $getTSR;
     private $rechargeMin;
     private $commandBank;
+    private $pusher;
+    private $option;
     //nhận dữ liệu callback từ thẻ siêu rẻ
     public function __construct()
     {
-       $this->getTSR = TheSieuReService::getTSR();
-       $this->rechargeMin = FunResource::site('recharge_min');
-       $this->commandBank = FunResource::site('command_bank');
+        $this->getTSR = TheSieuReService::getTSR();
+        $this->rechargeMin = FunResource::site('recharge_min');
+        $this->commandBank = FunResource::site('command_bank');
+        $this->option = array(
+            'cluster' => 'ap1',
+            'useTLS' => true);
+        $this->pusher = new Pusher(env('PUSHER_APP_KEY'),env('PUSHER_APP_SECRET'),env('PUSHER_APP_ID'),$this->option);
     }
     public function callbackTsr(Request $request)
     {
@@ -52,6 +59,8 @@ class CallbackController extends Controller
                     'transaction_money'=> "+".$request->amount,
                     'note'=>'Nap the cao',
                 ];
+                //thông báo kết quả đến khách hàng
+                $this->pusher->trigger("$card->user_id",'change-money','callapi');
                 //cộng tiền cho user
                 FunResource::upMoneyForUser($transHistory);
             }
@@ -62,6 +71,12 @@ class CallbackController extends Controller
     //lấy lịch sử giao dịch momo,atm từ api.web2m.com
     public function getHistoryTrans()
     {
+        //mảng này chứa id khách hàng vừa nạp tiền;
+        $listHistoryNew = [];
+
+        //khởi tạo realtime
+       
+
         // try{
             $type_transfers = ['MOMO','THESIEURE'];
             //xử lý lịch sử giao dịch momo
@@ -99,6 +114,10 @@ class CallbackController extends Controller
                                     'transaction_money'=> "+".$values['amount'],
                                     'note'=>'Nap tien MOMO',
                                 ];
+                                //thêm người dùng được cộng tiền vào mảng
+                                if(!in_array($user_id,$listHistoryNew)){
+                                    $listHistoryNew[] = $user_id;
+                                }
                                 //cộng tiền cho user
                                 FunResource::upMoneyForUser($transHistory);
                             }
@@ -140,6 +159,11 @@ class CallbackController extends Controller
                                     'transaction_money'=> "+".$values['amount'],
                                     'note'=>'Nap tien the sieu re',
                                 ];
+
+                                //thêm người dùng được cộng tiền vào mảng
+                                if(!in_array($user_id,$listHistoryNew)){
+                                    $listHistoryNew[] = $user_id;
+                                }
                                 //cộng tiền cho user đồng thời 
                                 FunResource::upMoneyForUser($transHistory);
                             }
@@ -172,15 +196,19 @@ class CallbackController extends Controller
                                 'amount' =>$values['amount'],
                             ];
 
-                            $insertTransMomo = TransferService::create($transfer);
-                            if($insertTransMomo){
+                            $insertTransAtm = TransferService::create($transfer);
+                            if($insertTransAtm){
                                 $transHistory = [
-                                    'action_id'=>$insertTransMomo->id,
+                                    'action_id'=>$insertTransAtm->id,
                                     'action_flag' =>4,
                                     'user_id'=> $user_id,
                                     'transaction_money'=> "+".$values['amount'],
                                     'note'=>'Nap tien tu '.$atm->bank_name,
                                 ];
+                                //thêm người dùng được cộng tiền vào mảng
+                                if(!in_array($user_id,$listHistoryNew)){
+                                    $listHistoryNew[] = $user_id;
+                                }
                                 //cộng tiền cho user
                                 FunResource::upMoneyForUser($transHistory);
                             }
@@ -188,6 +216,12 @@ class CallbackController extends Controller
                     }
                 }
             }
+
+            foreach ($listHistoryNew as $key => $id){
+                $this->pusher->trigger("$id",'change-money','callapi');
+            }
+            
+            return $listHistoryNew;
             return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
         // }catch(Exception $e){
         //     return FunResource::responseNoData(false,Mess::$EXCEPTION,500);

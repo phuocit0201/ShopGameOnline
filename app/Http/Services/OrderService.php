@@ -31,7 +31,7 @@ class OrderService{
         return DB::table('account_game')
         ->join('orders','account_game.id','=','orders.account_id')
         ->where('orders.user_id',$user_id)
-        ->select('account_game.id','account_game.username','account_game.password','account_game.sale_price')
+        ->select('account_game.id','account_game.username','account_game.password','account_game.sale_price','account_game.server_game','account_game.class','account_game.family')
         ->get();
     }
 

@@ -126,17 +126,6 @@ use Illuminate\Support\Facades\Route;
         });
         //----------------------------------------END------------------------------------------------------
 
-        //-----------------------------------ROUTE FACEVALUE------------------------------------------------
-         Route::group([
-            "prefix"=>"facevalue"
-        ],
-        function(){
-            Route::post('/create',[FaceValueController::class,"create"])->name("createFacevalue");
-            Route::delete('/destroy/{id}',[FaceValueController::class,"destroy"])->name("deleteFacevalue");
-            Route::put('/update/{id}',[FaceValueController::class,"update"])->name("updateFacevalue");
-        });
-        //----------------------------------------END--------------------------------------------------------
-
         //-----------------------------------ROUTE MOMO------------------------------------------------
         Route::group([
             "prefix"=>"momo"
@@ -188,9 +177,10 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::get('/index',[AccountController::class,"index"])->name("indexAcounts");
+            Route::get('/send',[AccountController::class,"create"]);
             Route::get('/get-accounts-client',[AccountController::class,"showAccountByCategoryClient"]);
             Route::get('/account-by-category/{id}',[AccountController::class,"showAccountByCategory"])->name("showAccountByCategory");
-            Route::get('/show/{id}',[AccountController::class,"show"])->name("showAccount");
+            Route::get('/show-account-client/{id}',[AccountController::class,"showAccountClient"]);
             Route::get('/crypt-data',[AccountController::class,"CryptData"]);
         });
         //------------------------------------------END--------------------------------------------------------

@@ -62,7 +62,7 @@ class AccountService{
     {
         return DB::table('account_game')
         ->join('categories','account_game.category_id','=','categories.id')
-        ->select('account_game.*')
+        ->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.created_at','account_game.description')
         ->where('account_game.status',0)
         ->where('account_game.id',$id)
         ->where('categories.status',0)
@@ -90,7 +90,7 @@ class AccountService{
     {
         $query = Account::query();
         $query->join('categories','account_game.category_id','=','categories.id');
-        $query->select('account_game.*');
+        $query->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.avatar');
         try{
             foreach($search as $key => $value){
                 if($key == 'sale_price'){

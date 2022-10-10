@@ -13,9 +13,12 @@ use App\Http\Services\TransHistoryService;
 use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Pusher\Pusher;
 
 class UserController extends Controller
 {
+    private $pusher;
+    private $option;
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => 
@@ -23,6 +26,11 @@ class UserController extends Controller
             'login','getMe','logout','updateMoney','refreshToken',
             'index','show','create','destroy','update','changePassword'
         ]]);
+
+        $this->option = array(
+            'cluster' => 'ap1',
+            'useTLS' => true);
+        $this->pusher = new Pusher(env('PUSHER_APP_KEY'),env('PUSHER_APP_SECRET'),env('PUSHER_APP_ID'),$this->option);
         
     }
 
@@ -155,6 +163,16 @@ class UserController extends Controller
            return FunResource::responseNoData(false,Mess::$USERNAME_EXIST,401);
         }
         $user->update($data);
+        //nếu khóa tài khoản người dùng thì đồng thời gửi thông báo đến người dùng
+        if($request->banned === 1){
+            $dataNotifi = [
+                'icon' => 'warning',
+                'title' => 'Thông Báo',
+                'message' => 'Tài khoản của bạn đã bị khóa'
+            ];
+            $this->pusher->trigger("$id",'banned-account',$dataNotifi);
+        }
+
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,UserService::getUserById($id),200);
     }
 
@@ -216,6 +234,7 @@ class UserController extends Controller
             $transHtr['befor_money'] = $data["money"];
             TransHistoryService::create($transHtr);
         }
+        $this->pusher->trigger("$request->id","change-money","callapi");
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 
