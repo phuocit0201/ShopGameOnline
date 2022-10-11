@@ -7,10 +7,9 @@ use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
 use App\Http\Services\AccountService;
 use App\Http\Services\CategoryService;
+use App\Http\Services\ImageDetailService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Validator;
-use Pusher\Pusher;
 
 class AccountController extends Controller
 {
@@ -74,8 +73,18 @@ class AccountController extends Controller
         }
         //tiến hành insert vào database
         $account = AccountService::create($req);
+        
         if($account === null){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
+        }
+
+        //thêm chi tiết hình ảnh của account_game
+        $imgDetails = [
+            'account_id' => $account->id
+        ];
+        foreach($request->img_details as $key => $img){
+            $imgDetails['link_img'] = $img;
+            ImageDetailService::create($imgDetails);
         }
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
     }
@@ -89,10 +98,28 @@ class AccountController extends Controller
     public function showAccountClient($id)
     {
         $account = AccountService::getAccountByIdClient($id);
+        $imgDetails = ImageDetailService::getByAccount($id);
+        $dataRelateAccount = [
+            'id' => $account->id,
+            'category_id' => $account->category_id,
+            'class'=> $account->class,
+            'server_game' => $account->server_game,
+            'sale_price' => $account->sale_price
+        ];
+        $relatedAccount = AccountService::getRelatedAccount($dataRelateAccount);
+        $listImg = [];
+        foreach($imgDetails as $key => $img){
+            $listImg[] = $img->link_img;
+        }
+        $dataAcount = [
+            'info' => $account,
+            'imgs'=> $listImg,
+            'related' => $relatedAccount
+        ];
         if(!$account){
             return FunResource::responseNoData(false,Mess::$EXCEPTION,404);
         }
-        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$account,200);
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,$dataAcount,200);
     }
 
     /**
@@ -196,9 +223,5 @@ class AccountController extends Controller
         $categoryId = $category->id;
         $accounts = AccountService::search($search,$request->per_page,$categoryId);
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$accounts,200);
-    }
-
-    public function CryptData(Request $request){
-       
     }
 }

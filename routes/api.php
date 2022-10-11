@@ -181,7 +181,6 @@ use Illuminate\Support\Facades\Route;
             Route::get('/get-accounts-client',[AccountController::class,"showAccountByCategoryClient"]);
             Route::get('/account-by-category/{id}',[AccountController::class,"showAccountByCategory"])->name("showAccountByCategory");
             Route::get('/show-account-client/{id}',[AccountController::class,"showAccountClient"]);
-            Route::get('/crypt-data',[AccountController::class,"CryptData"]);
         });
         //------------------------------------------END--------------------------------------------------------
         //---------------------------------------CALLBACK----------------------------------------------------

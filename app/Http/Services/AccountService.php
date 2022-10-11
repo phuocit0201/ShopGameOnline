@@ -62,7 +62,7 @@ class AccountService{
     {
         return DB::table('account_game')
         ->join('categories','account_game.category_id','=','categories.id')
-        ->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.created_at','account_game.description')
+        ->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.created_at','account_game.description','account_game.category_id')
         ->where('account_game.status',0)
         ->where('account_game.id',$id)
         ->where('categories.status',0)
@@ -112,6 +112,26 @@ class AccountService{
         }catch(Exception $e){
             return null;
         }
+    }
+
+    public static function getRelatedAccount($data){
+        // try{
+            return DB::table('account_game')
+            ->join('categories','account_game.category_id','=','categories.id')
+            ->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.avatar')
+            ->where('account_game.status',0)
+            ->where('categories.status',0)
+            ->where('account_game.class',$data['class'])
+            ->where('account_game.server_game',$data['server_game'])
+            ->where('account_game.sale_price','<=',$data['sale_price'] + 200000)
+            ->where('account_game.sale_price','>=',$data['sale_price'] - 200000)
+            ->where('account_game.sale_price','>',0)
+            ->where('account_game.id','!=',$data['id'])
+            ->where('categories.id',$data['category_id'])
+            ->get();
+        // }catch(Exception $e){
+        //     return;
+        // }
     }
 }
 
