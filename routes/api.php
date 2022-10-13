@@ -8,6 +8,7 @@ use App\Http\Controllers\api\v1\CategoryController;
 use App\Http\Controllers\api\v1\FaceValueController;
 use App\Http\Controllers\api\v1\MomoController;
 use App\Http\Controllers\api\v1\OrderController;
+use App\Http\Controllers\api\v1\RotationLuckController;
 use App\Http\Controllers\api\v1\UserController;
 use App\Http\Controllers\api\v1\SecurityController;
 use App\Http\Controllers\api\v1\SettingController;
@@ -73,12 +74,21 @@ use Illuminate\Support\Facades\Route;
         });
         //----------------------------------------END--------------------------------------------------------
 
-         //-----------------------------------ATM WALLET------------------------------------------------
+         //-----------------------------------ATM WALLET-----------------------------------------------------
          Route::group([
             "prefix"=>"atm-wallet"
         ],
         function(){
             Route::get('/get',[AtmWalletController::class,"index"]);
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+        //-----------------------------------ROUTE ROTATION LUCK------------------------------------------------
+        Route::group([
+            "prefix"=>"rotation-luck"
+        ],
+        function(){
+            Route::post('/rotation',[RotationLuckController::class,"rotation"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });
@@ -136,12 +146,22 @@ use Illuminate\Support\Facades\Route;
         });
         //----------------------------------------END--------------------------------------------------------
 
-         //-----------------------------------ROUTE THESIEURE------------------------------------------------
-         Route::group([
+        //-----------------------------------ROUTE THESIEURE------------------------------------------------
+        Route::group([
             "prefix"=>"thesieure"
         ],
         function(){
             Route::put('/update/{id}',[TheSieuReController::class,"update"])->name("updateTSR");
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+        //-----------------------------------ROUTE ROTATION LUCK------------------------------------------------
+        Route::group([
+            "prefix"=>"rotation-luck"
+        ],
+        function(){
+            Route::post('/create',[RotationLuckController::class,"create"]);
+            Route::get('/index',[RotationLuckController::class,"index"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });
@@ -202,6 +222,15 @@ use Illuminate\Support\Facades\Route;
             Route::get('/get-settings',[SettingController::class,"index"]);
         });
         //------------------------------------------END--------------------------------------------------------
+        //-----------------------------------ROUTE ROTATION LUCK------------------------------------------------
+        Route::group([
+            "prefix"=>"rotation-luck"
+        ],
+        function(){
+            Route::get('/index',[RotationLuckController::class,"index"]);
+            Route::get('/show-client/{slug}',[RotationLuckController::class,"showClient"]);
+        });
+        //----------------------------------------END--------------------------------------------------------
     });
 
 
