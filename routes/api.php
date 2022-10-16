@@ -89,6 +89,7 @@ use Illuminate\Support\Facades\Route;
         ],
         function(){
             Route::post('/rotation',[RotationLuckController::class,"rotation"]);
+            Route::get('/get-history-by-user',[RotationLuckController::class,"getHistoryRotatoByUser"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });
@@ -229,6 +230,7 @@ use Illuminate\Support\Facades\Route;
         function(){
             Route::get('/index',[RotationLuckController::class,"index"]);
             Route::get('/show-client/{slug}',[RotationLuckController::class,"showClient"]);
+            Route::get('/show-history-recently/{slug}',[RotationLuckController::class,"getHistoryRecently"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });

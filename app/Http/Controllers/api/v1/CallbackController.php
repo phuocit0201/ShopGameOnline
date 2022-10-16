@@ -49,9 +49,9 @@ class CallbackController extends Controller
                 'status' => $request->status,
                 'amount' => $request->amount
             ];
+            //lấy ra thông tin mệnh giá thẻ cào
             CardService::update($request->telco,$request->serial,$request->code,$data);
             if($request->status === 1){
-                //lấy ra thông tin mệnh giá thẻ cào
                 $transHistory = [
                     'action_id'=>$card->id,
                     'action_flag' =>3,

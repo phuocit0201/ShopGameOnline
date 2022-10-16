@@ -8,7 +8,6 @@ use App\Http\Services\UserService;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Validator;
 
 class FunResource{
     public static function responseNoData($status,$mess,$code){
