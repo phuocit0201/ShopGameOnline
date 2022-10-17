@@ -170,7 +170,7 @@ class UserController extends Controller
                 'title' => 'Thông Báo',
                 'message' => 'Tài khoản của bạn đã bị khóa'
             ];
-            $this->pusher->trigger("$id",'banned-account',$dataNotifi);
+            $this->pusher->trigger("$id",'banned-account',["data"=>$dataNotifi,"key"=>time()]);
         }
 
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,UserService::getUserById($id),200);
@@ -234,7 +234,7 @@ class UserController extends Controller
             $transHtr['befor_money'] = $data["money"];
             TransHistoryService::create($transHtr);
         }
-        $this->pusher->trigger("$request->id","change-money","callapi");
+        $this->pusher->trigger("$request->id","change-money",["key"=>time()]);
         return FunResource::responseNoData(true,Mess::$SUCCESSFULLY,200);
     }
 

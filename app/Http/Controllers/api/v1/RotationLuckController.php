@@ -13,9 +13,19 @@ use App\Http\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Pusher\Pusher;
 
 class RotationLuckController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->option = array(
+            'cluster' => 'ap1',
+            'useTLS' => true);
+        $this->pusher = new Pusher(env('PUSHER_APP_KEY'),env('PUSHER_APP_SECRET'),env('PUSHER_APP_ID'),$this->option);
+    }
+
     public function create(Request $request){
         $validator = Validator::make($request->all(),[
             'rotation_name' => 'required|max:100',
@@ -103,6 +113,9 @@ class RotationLuckController extends Controller
                 ];
                 TransHistoryService::create($transHistory);
                 $user->update($dataUpdateUser);
+                $rotationHistory['username']=$user->username;
+                //gửi dữ liệu realtime chi các client đang chơi vòng quay
+                $this->pusher->trigger("$rotationLuck->slug",'history-recently',$rotationHistory);
                 return FunResource::responseData(true,Mess::$SUCCESSFULLY,[
                     'deg'=> $deg,
                     'coins'=> $gift
