@@ -31,5 +31,20 @@ class TransHistoryService{
             return null;
         }
     }
+
+    public static function getTopMonth(){
+        try{
+            return DB::table('users')
+            ->join('transaction_history','users.id','transaction_history.user_id')
+            ->selectRaw('users.username, sum(substr(transaction_history.transaction_money,2)) as tong')
+            ->whereRaw('transaction_history.action_flag = 3 or transaction_history.action_flag = 4 and year(transaction_history.created_at) = SUBSTRING(current_date(),1 , 4) and month(transaction_history.created_at) = SUBSTRING(current_date(),6 , 2)')
+            ->groupBy('users.username')
+            ->orderByDesc('tong')
+            ->take(3)
+            ->get();
+        }catch(Exception $e){
+            return;
+        }
+    }
 }
 ?>

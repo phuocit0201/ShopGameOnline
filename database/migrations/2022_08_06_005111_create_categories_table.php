@@ -24,8 +24,8 @@ return new class extends Migration
         });
         DB::unprepared('
             insert into categories(name,slug,img,created_at) values
-            ("Ninjaschool","ninjaschool","http://localhost/ShopGame/asset/categories/ninjaschool.gif",current_time()),
-            ("Ninja Quạt Buff","ninja-quat-buff","http://localhost/ShopGame/asset/categories/ninjaschool-quat-buff.gif",current_time());
+            ("Ninjaschool","ninjaschool","ninjaschool.gif",current_time()),
+            ("Ninja Quạt Buff","ninja-quat-buff","ninjaschool-quat-buff.gif",current_time());
         ');
     }
 

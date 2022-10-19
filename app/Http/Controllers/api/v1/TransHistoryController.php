@@ -19,4 +19,8 @@ class TransHistoryController extends Controller
         $idUser = $user->getData()->id;
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,TransHistoryService::getByUser($idUser,$request->per_page),200);
     }
+
+    public function getTopMonth(){
+        return FunResource::responseData(true,Mess::$SUCCESSFULLY,TransHistoryService::getTopMonth(),200);
+    }
 }

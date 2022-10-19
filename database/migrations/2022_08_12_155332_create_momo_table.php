@@ -27,7 +27,7 @@ return new class extends Migration
 
         DB::unprepared('
             insert into momo(phone_number,full_name,token_api,note,link_logo,created_at) values
-            ("0845151117","LE HUU PHUOC","tokeapi","Vui lòng điền nhập đúng nội dung","logo.png",current_time());
+            ("0845151117","LE HUU PHUOC","tokeapi","Vui lòng điền nhập đúng nội dung","momo.png",current_time());
         ');
     }
 

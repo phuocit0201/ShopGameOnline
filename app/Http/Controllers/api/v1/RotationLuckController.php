@@ -30,6 +30,7 @@ class RotationLuckController extends Controller
         $validator = Validator::make($request->all(),[
             'rotation_name' => 'required|max:100',
             'img' => 'required',
+            'img_gift' => 'required',
             'price' => 'numeric|required',
             'slug' => 'required|max:255'
         ]);
@@ -41,7 +42,8 @@ class RotationLuckController extends Controller
             'rotation_name' => $request->rotation_name,
             'img' => $request->img,
             'price' => $request->price,
-            'slug' => $request->slug
+            'slug' => $request->slug,
+            'img_gift' => $request->img_gift
         ];
         $rotationLuck = RotationLuckService::create($data);
         //thêm phần thưởng vào vòng quay
@@ -55,8 +57,8 @@ class RotationLuckController extends Controller
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$rotationLuck,200);
     }
 
-    public function index(){
-        $rotationList = RotationLuckService::get();
+    public function getAllClient(){
+        $rotationList = RotationLuckService::getClient();
         return FunResource::responseData(true,Mess::$SUCCESSFULLY,$rotationList,200);
     }
 

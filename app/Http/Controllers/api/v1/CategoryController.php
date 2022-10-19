@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\FunResource;
 use App\Http\Helpers\Mess;
+use App\Http\Services\AccountService;
 use Illuminate\Http\Request;
 use App\Http\Services\CategoryService;
 use Illuminate\Support\Facades\Validator;
@@ -15,11 +16,26 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        return CategoryService::getAll($request->per_page);
+        return CategoryService::getAll();
     }
 
+    public function getAllClient(){
+        $categories = CategoryService::getAllByClient();
+        $data = [];
+        foreach($categories as $category){
+            $data[] = [
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'img' => $category->img,
+                'status' => $category->status,
+                'quantity_account' => AccountService::countAccountByCategory($category->id),
+                'quantity_sold_account' => AccountService::countAccountSoldByCategory($category->id)
+            ];
+        }
+        return FunResource::responseData(true, Mess::$SUCCESSFULLY,$data,200);
+    }
     /**
      * Show the form for creating a new resource.
      *

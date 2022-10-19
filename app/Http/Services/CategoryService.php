@@ -14,9 +14,17 @@ class CategoryService{
         }
     }
 
-    public static function getAll($perPage)
+    public static function getAll()
     {
-        return DB::table('categories')->where('status','!=',2)->paginate($perPage);
+        return DB::table('categories')->where('status','!=',2)
+        ->get();
+    }
+
+    public static function getAllByClient()
+    {
+        return DB::table('categories')
+        ->where('status',0)
+        ->get();
     }
 
     public static function find($id){

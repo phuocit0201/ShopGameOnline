@@ -24,7 +24,7 @@ class AccountService{
     }
 
     //dành cho admin vì lấy kèm những tài khoản trạng thái ẩn hoặc đã bán
-    public static function getAccountByCategoryAdmin($id,$perPage,){
+    public static function getAccountByCategoryAdmin($id,$perPage){
         return DB::table('account_game')
         ->join('categories','account_game.category_id','=','categories.id')
         ->select('account_game.*','categories.name')
@@ -60,15 +60,37 @@ class AccountService{
     //get account game dành cho client
     public static function getAccountByIdClient($id)
     {
-        return DB::table('account_game')
-        ->join('categories','account_game.category_id','=','categories.id')
-        ->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.created_at','account_game.description','account_game.category_id')
-        ->where('account_game.status',0)
-        ->where('account_game.id',$id)
-        ->where('categories.status',0)
-        ->first();
+        try{
+            return DB::table('account_game')
+            ->join('categories','account_game.category_id','=','categories.id')
+            ->select('account_game.class','account_game.family','account_game.id','account_game.sale_price','account_game.server_game','account_game.level','account_game.created_at','account_game.description','account_game.category_id')
+            ->where('account_game.status',0)
+            ->where('account_game.id',$id)
+            ->where('categories.status',0)
+            ->first();
+        }catch( Exception $e){
+            return;
+        }
+       
     }
 
+    public static function countAccountByCategory($categoryId){
+        try{
+            return DB::table('account_game')->where('category_id',$categoryId)->count();
+        }catch(Exception $e){
+            return;
+        }
+    }
+
+    public static function countAccountSoldByCategory($categoryId){
+        try{
+            return DB::table('account_game')->where('category_id',$categoryId)
+            ->where('status',3)
+            ->count();
+        }catch(Exception $e){
+            return;
+        }
+    }
     //update account
     public static function update($id,$data)
     {

@@ -12,6 +12,7 @@ class RotationLuck extends Model
     protected $fillable = [
         'rotation_name',
         'img',
+        'img_gift',
         'price',
         'slug',
         'status'

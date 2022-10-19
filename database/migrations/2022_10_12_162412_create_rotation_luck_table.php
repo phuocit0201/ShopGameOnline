@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->char('rotation_name',100);
             $table->text('img');
+            $table->text('img_gift');
             $table->integer('price');
             $table->char('slug',255);
             $table->integer('status')->default(0);

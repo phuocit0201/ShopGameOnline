@@ -28,7 +28,7 @@ return new class extends Migration
         });
         DB::unprepared('
             insert into atm(account_number,full_name,password,token_api,note,bank_id)value
-            ("0845151117","LE HUU PHUOC","huuphuoc","tokenapi","Chi Nhanh Da Nang",1);
+            ("0845151117","LE HUU PHUOC","huuphuoc","tokenapi","Chi Nhanh Da Nang",3);
         ');
     }
 

@@ -188,7 +188,7 @@ use Illuminate\Support\Facades\Route;
             "prefix"=>"categories"
         ],
         function(){
-            Route::get('/index',[CategoryController::class,"index"])->name("indexCategory");
+            Route::get('/get-client',[CategoryController::class,"getAllClient"])->name("indexCategory");
         });
         //------------------------------------------END--------------------------------------------------------
         
@@ -228,9 +228,18 @@ use Illuminate\Support\Facades\Route;
             "prefix"=>"rotation-luck"
         ],
         function(){
-            Route::get('/index',[RotationLuckController::class,"index"]);
+            Route::get('/get-client',[RotationLuckController::class,"getAllClient"]);
             Route::get('/show-client/{slug}',[RotationLuckController::class,"showClient"]);
             Route::get('/show-history-recently/{slug}',[RotationLuckController::class,"getHistoryRecently"]);
+        });
+        //----------------------------------------END--------------------------------------------------------
+
+        //-----------------------------------ROUTE ROTATION LUCK------------------------------------------------
+        Route::group([
+            "prefix"=>"trans-history"
+        ],
+        function(){
+            Route::get('/get-top-month',[TransHistoryController::class,"getTopMonth"]);
         });
         //----------------------------------------END--------------------------------------------------------
     });

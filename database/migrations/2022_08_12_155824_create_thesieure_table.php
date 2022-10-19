@@ -29,7 +29,7 @@ return new class extends Migration
         });
         DB::unprepared('
             insert into thesieure (username,full_name,token_api,partner_key,partner_id,note,link_logo,created_at) values
-            ("phuocit0201","Le Huu Phuoc","abcd1234","abcd1234","12345","Vui lòng điền đúng nội dung","logo.png",current_time());
+            ("phuocit0201","Le Huu Phuoc","abcd1234","abcd1234","12345","Vui lòng điền đúng nội dung","momo.png",current_time());
         ');
     }
 
