@@ -42,6 +42,7 @@ class AccountService{
         ->where('account_game.status',0)
         ->where('account_game.category_id',$id)
         ->where('categories.status',0)
+        ->orderByDesc('account_game.id')
         ->paginate($perPage);
     }
 
@@ -130,6 +131,8 @@ class AccountService{
             $query->where('account_game.status',0);
             $query->where('account_game.category_id',$id);
             $query->where('categories.status',0);
+            $query->orderByDesc('account_game.id');
+        
             return $query->paginate($perPage);
         }catch(Exception $e){
             return null;
